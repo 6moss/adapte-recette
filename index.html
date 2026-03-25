@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Adaptez facilement les quantités de vos recettes de cuisine">
+    <meta name="theme-color" content="#E07A5F">
+    <title>Adapte Recette</title>
+    <link rel="manifest" href="manifest.json">
+    <link rel="icon" type="image/svg+xml" href="icons/icon.svg">
+    <link rel="apple-touch-icon" href="icons/icon-192.png">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Adapte Recette</h1>
+            <p class="subtitle">Ajustez les quantités en un clic</p>
+        </header>
+
+        <main>
+            <!-- Section Import -->
+            <section class="card import-section">
+                <h2>Importer les ingredients</h2>
+
+                <div class="tabs">
+                    <button class="tab active" data-tab="url">URL</button>
+                    <button class="tab" data-tab="description">Description</button>
+                    <button class="tab" data-tab="manual">Manuel</button>
+                </div>
+
+                <div class="tab-content">
+                    <!-- Tab URL -->
+                    <div class="tab-panel active" id="tab-url">
+                        <label for="url-input">Collez l'URL du Reel ou TikTok</label>
+                        <div class="input-group">
+                            <input type="url" id="url-input" placeholder="https://www.instagram.com/reel/...">
+                            <button id="fetch-btn" class="btn btn-primary">Recuperer</button>
+                        </div>
+                        <p class="hint">Instagram Reels et TikTok supportes</p>
+                    </div>
+
+                    <!-- Tab Description -->
+                    <div class="tab-panel" id="tab-description">
+                        <label for="description-input">Collez la description de la recette</label>
+                        <textarea id="description-input" rows="6" placeholder="Exemple:
+Pour 4 personnes:
+- 200g de farine
+- 3 oeufs
+- 50cl de lait
+- 1 pincee de sel"></textarea>
+                        <button id="extract-btn" class="btn btn-primary">Extraire les ingredients</button>
+                        <details class="help-details">
+                            <summary>Comment copier la description ?</summary>
+                            <div class="help-content">
+                                <p><strong>Instagram :</strong></p>
+                                <ol>
+                                    <li>Ouvrez le Reel dans l'app</li>
+                                    <li>Appuyez sur "... plus" sous la description</li>
+                                    <li>Maintenez appuye sur le texte et selectionnez "Copier"</li>
+                                </ol>
+                                <p><strong>TikTok :</strong></p>
+                                <ol>
+                                    <li>Ouvrez la video dans l'app</li>
+                                    <li>Appuyez sur la description pour la voir en entier</li>
+                                    <li>Maintenez appuye et copiez le texte</li>
+                                </ol>
+                            </div>
+                        </details>
+                    </div>
+
+                    <!-- Tab Manuel -->
+                    <div class="tab-panel" id="tab-manual">
+                        <div class="manual-form">
+                            <div class="manual-row">
+                                <input type="number" class="ingredient-qty" placeholder="Qte" step="any">
+                                <input type="text" class="ingredient-unit" placeholder="Unite">
+                                <input type="text" class="ingredient-name" placeholder="Ingredient">
+                                <button class="btn-icon btn-add" title="Ajouter">+</button>
+                            </div>
+                        </div>
+                        <button id="add-ingredient-btn" class="btn btn-secondary">+ Ajouter un ingredient</button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Section Calcul (avec portions d'origine) -->
+            <section class="card calculation-section" id="calculation-section" style="display: none;">
+                <h2>Adapter les quantites</h2>
+
+                <div class="portions-row">
+                    <div class="portions-original" id="portions-original-group">
+                        <label for="portions-original">Recette pour</label>
+                        <input type="number" id="portions-original" value="4" min="1">
+                        <span>pers.</span>
+                        <span class="portions-hint" id="portions-hint">(a verifier)</span>
+                    </div>
+                    <span class="portions-arrow">→</span>
+                    <div class="portions-target-group">
+                        <label for="portions-target">Je veux</label>
+                        <input type="number" id="portions-target" value="4" min="1">
+                        <span>pers.</span>
+                    </div>
+                </div>
+
+                <div class="calc-mode">
+                    <label class="radio-label">
+                        <input type="radio" name="calc-mode" value="portions" checked>
+                        <span>Par portions</span>
+                    </label>
+                    <label class="radio-label">
+                        <input type="radio" name="calc-mode" value="multiplier">
+                        <span>Par multiplicateur</span>
+                    </label>
+                </div>
+
+                <div class="calc-input" id="multiplier-input-group" style="display: none;">
+                    <label for="multiplier">Multiplicateur :</label>
+                    <input type="number" id="multiplier" value="1" min="0.1" step="0.1">
+                    <div class="quick-multipliers">
+                        <button class="btn-chip" data-multiplier="0.5">x0.5</button>
+                        <button class="btn-chip" data-multiplier="1.5">x1.5</button>
+                        <button class="btn-chip" data-multiplier="2">x2</button>
+                        <button class="btn-chip" data-multiplier="3">x3</button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Section Resultat -->
+            <section class="card result-section" id="result-section" style="display: none;">
+                <h2>Quantites adaptees</h2>
+                <div class="result-info">
+                    <span id="result-portions"></span>
+                </div>
+                <div class="result-list" id="result-list">
+                    <!-- Results will be added here dynamically -->
+                </div>
+                <button id="copy-result-btn" class="btn btn-secondary">Copier la liste</button>
+            </section>
+
+            <!-- Section Ingredients (pliable) -->
+            <section class="card ingredients-section collapsible" id="ingredients-section" style="display: none;">
+                <div class="collapsible-header" id="ingredients-toggle">
+                    <h2>Ingredients <span class="ingredient-count"></span></h2>
+                    <span class="collapse-icon">▼</span>
+                </div>
+
+                <div class="collapsible-content" id="ingredients-content">
+                    <div class="ingredients-list" id="ingredients-list">
+                        <!-- Ingredients will be added here dynamically -->
+                    </div>
+
+                    <button id="clear-ingredients-btn" class="btn btn-secondary">Reinitialiser</button>
+                </div>
+            </section>
+        </main>
+
+        <footer>
+            <p>Fait avec amour pour les cuisiniers</p>
+        </footer>
+    </div>
+
+    <!-- Loading overlay -->
+    <div class="loading-overlay" id="loading-overlay" style="display: none;">
+        <div class="spinner"></div>
+        <p>Chargement...</p>
+    </div>
+
+    <!-- Toast notifications -->
+    <div class="toast-container" id="toast-container"></div>
+
+    <script src="parser.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>

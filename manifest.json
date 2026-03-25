@@ -1,0 +1,40 @@
+{
+    "name": "Adapte Recette",
+    "short_name": "Adapte Recette",
+    "description": "Adaptez facilement les quantites de vos recettes de cuisine",
+    "start_url": "/",
+    "display": "standalone",
+    "background_color": "#FAF3E0",
+    "theme_color": "#E07A5F",
+    "orientation": "portrait-primary",
+    "scope": "/",
+    "lang": "fr",
+    "icons": [
+        {
+            "src": "/icons/icon.svg",
+            "sizes": "any",
+            "type": "image/svg+xml",
+            "purpose": "any"
+        },
+        {
+            "src": "/icons/icon-192.png",
+            "sizes": "192x192",
+            "type": "image/png",
+            "purpose": "any maskable"
+        },
+        {
+            "src": "/icons/icon-512.png",
+            "sizes": "512x512",
+            "type": "image/png",
+            "purpose": "any maskable"
+        }
+    ],
+    "categories": ["food", "utilities"],
+    "shortcuts": [
+        {
+            "name": "Nouvelle recette",
+            "url": "/",
+            "description": "Adapter une nouvelle recette"
+        }
+    ]
+}
