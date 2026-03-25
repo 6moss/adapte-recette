@@ -106,12 +106,16 @@ const IngredientParser = (function() {
         'cuilleres a cafe': 'c.a.c', 'cuillères à café': 'c.a.c',
         'cuill a cafe': 'c.a.c', 'cuill. a cafe': 'c.a.c',
         'cuill à café': 'c.a.c', 'cuill. à café': 'c.a.c',
+        // Variantes avec "c." + "a/à" + "cafe/café"
+        'c. a cafe': 'c.a.c', 'c. à cafe': 'c.a.c', 'c. a café': 'c.a.c', 'c. à café': 'c.a.c',
+        'c a cafe': 'c.a.c', 'c à cafe': 'c.a.c', 'c a café': 'c.a.c', 'c à café': 'c.a.c',
         'tsp': 'c.a.c', 'tsps': 'c.a.c',
         'teaspoon': 'c.a.c', 'teaspoons': 'c.a.c',
         // Cuillere a dessert (~10ml)
         'cad': 'c.a.d', 'c a d': 'c.a.d', 'c.a.d': 'c.a.d', 'c.a.d.': 'c.a.d',
         'cuillere a dessert': 'c.a.d', 'cuillère à dessert': 'c.a.d',
         'cuilleres a dessert': 'c.a.d', 'cuillères à dessert': 'c.a.d',
+        'c. a dessert': 'c.a.d', 'c. à dessert': 'c.a.d', 'c a dessert': 'c.a.d', 'c à dessert': 'c.a.d',
         'dsp': 'c.a.d', 'dessertspoon': 'c.a.d', 'dessertspoons': 'c.a.d',
         // Cuillere a soupe (~15ml) - TOUTES VARIANTES
         'cas': 'c.a.s', 'c a s': 'c.a.s',
@@ -122,6 +126,8 @@ const IngredientParser = (function() {
         'cuilleres a soupe': 'c.a.s', 'cuillères à soupe': 'c.a.s',
         'cuill a soupe': 'c.a.s', 'cuill. a soupe': 'c.a.s',
         'cuill à soupe': 'c.a.s', 'cuill. à soupe': 'c.a.s',
+        // Variantes avec "c." + "a/à" + "soupe"
+        'c. a soupe': 'c.a.s', 'c. à soupe': 'c.a.s', 'c a soupe': 'c.a.s', 'c à soupe': 'c.a.s',
         'tbsp': 'c.a.s', 'tbsps': 'c.a.s', 'tbl': 'c.a.s', 'tbs': 'c.a.s',
         'tablespoon': 'c.a.s', 'tablespoons': 'c.a.s',
 
@@ -532,7 +538,7 @@ const IngredientParser = (function() {
 
         if (hasModifier && words.length > 1) {
             // Cherche une unite apres le modificateur
-            for (let len = Math.min(3, words.length - 1); len >= 1; len--) {
+            for (let len = Math.min(4, words.length - 1); len >= 1; len--) {
                 const candidate = words.slice(1, 1 + len).join(' ');
                 const found = findUnit(candidate);
                 if (found) {
@@ -556,7 +562,7 @@ const IngredientParser = (function() {
         }
 
         // Cherche une unite directement (sans modificateur)
-        for (let len = Math.min(3, words.length); len >= 1; len--) {
+        for (let len = Math.min(4, words.length); len >= 1; len--) {
             const candidate = words.slice(0, len).join(' ');
             const found = findUnit(candidate);
             if (found) {
@@ -676,6 +682,16 @@ const IngredientParser = (function() {
             name = cleanIngredientName(gluedMatch[3].replace(/^(de|d'|du|des)\s+/i, ''));
             if (name && name.length > 1) {
                 return { name, quantity, unit };
+            }
+        }
+
+        // Pattern: ligne qui commence par une unite (implique quantite = 1)
+        // Ex: "pincée de sel", "gousse d'ail", "trait de citron"
+        const unitFirstResult = extractUnit(cleanedLine);
+        if (unitFirstResult.unit && unitFirstResult.remaining) {
+            name = cleanIngredientName(unitFirstResult.remaining.replace(/^(de|d'|du|des)\s+/i, ''));
+            if (name && name.length > 1) {
+                return { name, quantity: 1, unit: unitFirstResult.unit };
             }
         }
 
