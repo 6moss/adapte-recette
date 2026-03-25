@@ -612,8 +612,11 @@ const IngredientParser = (function() {
         // Filtre le bruit
         if (isNoise(originalLine)) return null;
 
-        // Nettoie les puces et tirets au debut
-        const cleanedLine = originalLine.replace(/^[•\-\*·]\s*/, '').trim();
+        // Nettoie les puces, tirets et emojis au debut
+        const cleanedLine = originalLine
+            .replace(/^[\u{1F300}-\u{1F9FF}\u{2600}-\u{26FF}\u{2700}-\u{27BF}\u{1F600}-\u{1F64F}\u{1F680}-\u{1F6FF}]+\s*/gu, '') // Emojis
+            .replace(/^[•\-\*·]\s*/, '') // Puces
+            .trim();
         if (!cleanedLine || cleanedLine.length < 2) return null;
 
         let quantity = null;

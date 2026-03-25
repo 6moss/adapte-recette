@@ -112,7 +112,11 @@ Pour 4 personnes:
                     <span class="portions-arrow">→</span>
                     <div class="portions-target-group">
                         <label for="portions-target">Je veux</label>
-                        <input type="number" id="portions-target" value="4" min="1">
+                        <div class="stepper">
+                            <button type="button" class="stepper-btn" id="portions-minus">−</button>
+                            <input type="number" id="portions-target" value="4" min="1">
+                            <button type="button" class="stepper-btn" id="portions-plus">+</button>
+                        </div>
                         <span>pers.</span>
                     </div>
                 </div>

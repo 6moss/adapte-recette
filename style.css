@@ -349,6 +349,64 @@ textarea {
     display: none;
 }
 
+/* Stepper component (+/-) */
+.stepper {
+    display: flex;
+    align-items: center;
+    gap: 0;
+    background: var(--color-bg-card);
+    border: 2px solid var(--color-border);
+    border-radius: var(--radius-sm);
+    overflow: hidden;
+}
+
+.stepper input {
+    width: 50px;
+    text-align: center;
+    font-weight: 600;
+    font-size: 1.1rem;
+    border: none;
+    border-radius: 0;
+    padding: 0.5rem 0.25rem;
+    background: transparent;
+    -moz-appearance: textfield;
+}
+
+.stepper input::-webkit-outer-spin-button,
+.stepper input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+.stepper input:focus {
+    outline: none;
+    box-shadow: none;
+}
+
+.stepper-btn {
+    width: 40px;
+    height: 40px;
+    padding: 0;
+    border: none;
+    background: var(--color-primary);
+    color: white;
+    font-size: 1.25rem;
+    font-weight: bold;
+    cursor: pointer;
+    transition: var(--transition);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.stepper-btn:hover {
+    background: var(--color-primary-dark);
+}
+
+.stepper-btn:active {
+    transform: scale(0.95);
+}
+
 /* Collapsible sections */
 .collapsible .collapsible-header {
     display: flex;

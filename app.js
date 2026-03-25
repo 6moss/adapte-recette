@@ -407,6 +407,21 @@
         // Portions target change
         elements.portionsTarget.addEventListener('input', updateResults);
 
+        // Stepper buttons (+/-)
+        document.getElementById('portions-minus').addEventListener('click', () => {
+            const current = parseInt(elements.portionsTarget.value) || 1;
+            if (current > 1) {
+                elements.portionsTarget.value = current - 1;
+                updateResults();
+            }
+        });
+
+        document.getElementById('portions-plus').addEventListener('click', () => {
+            const current = parseInt(elements.portionsTarget.value) || 1;
+            elements.portionsTarget.value = current + 1;
+            updateResults();
+        });
+
         // Multiplier change
         elements.multiplier.addEventListener('input', updateResults);
 
