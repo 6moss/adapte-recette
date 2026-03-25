@@ -448,21 +448,21 @@ const IngredientParser = (function() {
     function parseNumber(str) {
         const normalized = normalizeText(str.trim());
 
+        // Nombre + fraction (ex: "1 1/2") - DOIT etre teste en premier
+        const mixedMatch = normalized.match(/^(\d+)\s+(\d+)\s*\/\s*(\d+)$/);
+        if (mixedMatch) {
+            return parseFloat(mixedMatch[1]) + parseFloat(mixedMatch[2]) / parseFloat(mixedMatch[3]);
+        }
+
+        // Fraction simple (ex: "1/2", "3/4") - AVANT les nombres simples
+        const fraction = parseFraction(normalized);
+        if (fraction !== null) return fraction;
+
         // Nombre en chiffres (avec virgule ou point)
         const numMatch = normalized.match(/^(\d+)[,.]?(\d*)$/);
         if (numMatch) {
             const decimal = numMatch[2] ? '.' + numMatch[2] : '';
             return parseFloat(numMatch[1] + decimal);
-        }
-
-        // Fraction
-        const fraction = parseFraction(normalized);
-        if (fraction !== null) return fraction;
-
-        // Nombre + fraction (ex: "1 1/2")
-        const mixedMatch = normalized.match(/^(\d+)\s+(\d+)\s*\/\s*(\d+)$/);
-        if (mixedMatch) {
-            return parseFloat(mixedMatch[1]) + parseFloat(mixedMatch[2]) / parseFloat(mixedMatch[3]);
         }
 
         // Nombre en lettres
@@ -636,8 +636,9 @@ const IngredientParser = (function() {
         }
 
         // Pattern principal: quantite au debut
-        // Ex: "200g de farine", "2 gousses d'ail", "3 echalotes ciselees"
-        const qtyPattern = /^(\d+[,.]?\d*|\d+\s*\/\s*\d+|un|une|deux|trois|quatre|cinq|six|sept|huit|neuf|dix|demi|demie)\s*(.*)$/i;
+        // Ex: "200g de farine", "2 gousses d'ail", "1/2 cup flour", "1 1/2 tsp salt"
+        // IMPORTANT: Les fractions doivent etre testees AVANT les nombres simples
+        const qtyPattern = /^(\d+\s+\d+\s*\/\s*\d+|\d+\s*\/\s*\d+|\d+[,.]?\d*|un|une|deux|trois|quatre|cinq|six|sept|huit|neuf|dix|demi|demie)\s*(.*)$/i;
         const qtyMatch = cleanedLine.match(qtyPattern);
 
         if (qtyMatch) {
