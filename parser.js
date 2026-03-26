@@ -689,6 +689,18 @@ const IngredientParser = (function() {
             }
         }
 
+        // Pattern avec espace entre nombre et unite: "100 g de farine", "50 cl de lait"
+        const spacedUnitPattern = /^(\d+[,.]?\d*)\s+(g|kg|mg|ml|cl|dl|l)\s+(.+)/i;
+        const spacedMatch = cleanedLine.match(spacedUnitPattern);
+        if (spacedMatch) {
+            quantity = parseNumber(spacedMatch[1]);
+            unit = NORMALIZED_UNITS[normalizeText(spacedMatch[2])] || spacedMatch[2];
+            name = cleanIngredientName(spacedMatch[3].replace(/^(de|d'|du|des)\s+/i, ''));
+            if (name && name.length > 1) {
+                return { name, quantity, unit };
+            }
+        }
+
         // Pattern: ligne qui commence par une unite (implique quantite = 1)
         // Ex: "pincée de sel", "gousse d'ail", "trait de citron"
         const unitFirstResult = extractUnit(cleanedLine);
@@ -781,8 +793,8 @@ const IngredientParser = (function() {
         const section = extractIngredientSection(text);
 
         // Emojis couramment utilises comme separateurs dans les reseaux sociaux
-        // 🥄 cuillere, 👉 fleche, ➡️ fleche, ✅ check, ▪️ puce, 🔸🔹 losanges, 🌿 herbe, ✨ etoile
-        const emojiSeparators = /[\u{1F944}\u{1F449}\u{27A1}\u{2705}\u{25AA}\u{25AB}\u{1F538}\u{1F539}\u{1F33F}\u{2728}\u{1F34E}\u{1F345}\u{1F952}\u{1F955}\u{1F951}]/gu;
+        // Inclut: cuilleres, fleches, checks, puces, etoiles, coeurs, aliments, etc.
+        const emojiSeparators = /[\u{1F944}\u{1F449}\u{1F448}\u{27A1}\u{2B05}\u{2705}\u{2714}\u{25AA}\u{25AB}\u{25CF}\u{25CB}\u{1F538}\u{1F539}\u{1F53A}\u{1F53B}\u{1F33F}\u{1F331}\u{1F33E}\u{2728}\u{2B50}\u{1F31F}\u{1F34E}\u{1F34F}\u{1F345}\u{1F346}\u{1F347}\u{1F349}\u{1F34A}\u{1F34B}\u{1F34C}\u{1F34D}\u{1F351}\u{1F352}\u{1F353}\u{1F95D}\u{1F952}\u{1F955}\u{1F951}\u{1F954}\u{1F35E}\u{1F950}\u{1F956}\u{1F9C0}\u{1F95A}\u{1F373}\u{1F357}\u{1F356}\u{1F969}\u{1F953}\u{1F9C8}\u{1F49A}\u{1F49B}\u{1F49C}\u{1F499}\u{2764}\u{1F90D}\u{1F90E}\u{1F5A4}]/gu;
 
         // Separe par lignes ET par emojis separateurs
         const lines = section
