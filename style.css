@@ -873,3 +873,181 @@ footer {
 .ad-container ins {
     max-width: 100%;
 }
+
+/* ===================== */
+/* Blog Styles           */
+/* ===================== */
+
+/* Breadcrumb navigation */
+.breadcrumb {
+    font-size: 0.85rem;
+    color: var(--color-text-light);
+    margin-bottom: 1rem;
+    padding: 0.5rem 0;
+}
+
+.breadcrumb a {
+    color: var(--color-primary);
+    text-decoration: none;
+}
+
+.breadcrumb a:hover {
+    text-decoration: underline;
+}
+
+/* Blog grid (listing page) */
+.blog-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1rem;
+    margin-top: 1rem;
+}
+
+.blog-card {
+    background: var(--color-bg-card);
+    border-radius: var(--radius);
+    padding: 1.25rem;
+    box-shadow: var(--shadow);
+    text-decoration: none;
+    color: inherit;
+    transition: var(--transition);
+    display: block;
+}
+
+.blog-card:hover {
+    box-shadow: var(--shadow-lg);
+    transform: translateY(-2px);
+}
+
+.blog-card h3 {
+    font-size: 1.1rem;
+    color: var(--color-primary);
+    margin-bottom: 0.5rem;
+}
+
+.blog-card p {
+    font-size: 0.9rem;
+    color: var(--color-text-light);
+    line-height: 1.5;
+    margin: 0;
+}
+
+.blog-card .blog-card-meta {
+    font-size: 0.8rem;
+    color: var(--color-text-light);
+    margin-top: 0.75rem;
+    opacity: 0.8;
+}
+
+/* Blog article styles */
+.blog-article h2 {
+    font-size: 1.5rem;
+}
+
+.article-meta {
+    font-size: 0.85rem;
+    color: var(--color-text-light);
+    margin-bottom: 1.5rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid var(--color-border);
+}
+
+.article-intro {
+    font-size: 1.05rem;
+    color: var(--color-text);
+    line-height: 1.7;
+    margin-bottom: 1.5rem;
+    padding: 1rem;
+    background: var(--color-bg);
+    border-radius: var(--radius-sm);
+    border-left: 4px solid var(--color-primary);
+}
+
+/* Conversion tables in articles */
+.conversion-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 1rem 0;
+    font-size: 0.9rem;
+    background: var(--color-bg-card);
+    border-radius: var(--radius-sm);
+    overflow: hidden;
+}
+
+.conversion-table th,
+.conversion-table td {
+    padding: 0.75rem 1rem;
+    text-align: left;
+    border-bottom: 1px solid var(--color-border);
+}
+
+.conversion-table th {
+    background: var(--color-primary);
+    color: white;
+    font-weight: 600;
+}
+
+.conversion-table tr:last-child td {
+    border-bottom: none;
+}
+
+.conversion-table tr:nth-child(even) {
+    background: var(--color-bg);
+}
+
+/* Formula box (for mathematical formulas) */
+.formula-box {
+    background: var(--color-bg);
+    border: 2px solid var(--color-secondary);
+    border-radius: var(--radius);
+    padding: 1rem 1.25rem;
+    margin: 1rem 0;
+    text-align: center;
+}
+
+.formula-box code {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: var(--color-text);
+    background: none;
+    padding: 0;
+}
+
+/* Article CTA (Call to Action) */
+.article-cta {
+    background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%);
+    color: white;
+    border-radius: var(--radius);
+    padding: 1.5rem;
+    margin-top: 2rem;
+    text-align: center;
+}
+
+.article-cta h4 {
+    font-size: 1.2rem;
+    margin-bottom: 0.5rem;
+    color: white;
+}
+
+.article-cta p {
+    font-size: 0.95rem;
+    opacity: 0.95;
+    margin-bottom: 1rem;
+    color: white;
+}
+
+.article-cta .btn-primary {
+    background: white;
+    color: var(--color-primary);
+}
+
+.article-cta .btn-primary:hover {
+    background: var(--color-bg);
+}
+
+/* Blog intro on listing page */
+.blog-intro {
+    color: var(--color-text-light);
+    margin-bottom: 1rem;
+    line-height: 1.6;
+}
