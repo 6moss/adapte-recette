@@ -314,6 +314,51 @@ async function fetchInstagramDescription(postId, originalUrl) {
 }
 
 /**
+ * Fetch Facebook description using Open Graph
+ */
+async function fetchFacebookDescription(url) {
+    try {
+        // Try Open Graph meta tags
+        const response = await fetch(url, {
+            headers: {
+                'User-Agent': USER_AGENTS.bot,
+                'Accept': 'text/html,application/xhtml+xml',
+                'Accept-Language': 'fr-FR,fr;q=0.9',
+            },
+            redirect: 'follow',
+        });
+
+        if (!response.ok) return null;
+
+        const html = await response.text();
+
+        // Try og:description
+        let match = html.match(/<meta\s+property="og:description"\s+content="([^"]+)"/i);
+        if (!match) {
+            match = html.match(/<meta\s+content="([^"]+)"\s+property="og:description"/i);
+        }
+
+        if (match && match[1]) {
+            const description = cleanHtml(match[1]);
+            if (description.length > 30) {
+                return description;
+            }
+        }
+
+        // Try standard description
+        match = html.match(/<meta\s+name="description"\s+content="([^"]+)"/i);
+        if (match && match[1]) {
+            return cleanHtml(match[1]);
+        }
+
+        return null;
+    } catch (e) {
+        console.error('Facebook fetch failed:', e);
+        return null;
+    }
+}
+
+/**
  * Fetch TikTok description using oEmbed
  */
 async function fetchTikTokDescription(url) {
@@ -407,9 +452,11 @@ export default async function handler(request) {
             description = await fetchInstagramDescription(postId, url);
         } else if (url.includes('tiktok.com') || url.includes('vm.tiktok.com')) {
             description = await fetchTikTokDescription(url);
+        } else if (url.includes('facebook.com') || url.includes('fb.watch')) {
+            description = await fetchFacebookDescription(url);
         } else {
             return new Response(
-                JSON.stringify({ error: 'Plateforme non supportee. Utilisez Instagram ou TikTok.' }),
+                JSON.stringify({ error: 'Plateforme non supportee. Utilisez Instagram, TikTok ou Facebook.' }),
                 { status: 400, headers }
             );
         }

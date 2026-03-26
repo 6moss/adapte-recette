@@ -169,9 +169,9 @@
             return;
         }
 
-        // Check if it's Instagram or TikTok
-        if (!url.includes('instagram.com') && !url.includes('tiktok.com')) {
-            showToast('Seuls Instagram et TikTok sont supportes', 'error');
+        // Check if it's Instagram, TikTok or Facebook
+        if (!url.includes('instagram.com') && !url.includes('tiktok.com') && !url.includes('facebook.com') && !url.includes('fb.watch')) {
+            showToast('Seuls Instagram, TikTok et Facebook sont supportes', 'error');
             return;
         }
 
@@ -309,7 +309,9 @@
             // Portions detectees dans le texte
             originalPortions = portions;
             elements.portionsOriginal.value = portions;
-            elements.portionsTarget.value = portions;
+            // Target toujours superieur a l'original (au moins +1, minimum 2)
+            const targetPortions = Math.max(portions + 1, 2);
+            elements.portionsTarget.value = targetPortions;
             elements.portionsOriginalGroup.classList.remove('needs-check');
             elements.portionsOriginalGroup.classList.add('confirmed');
         } else {

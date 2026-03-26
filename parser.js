@@ -355,6 +355,12 @@ const IngredientParser = (function() {
         /^\s*\d+\s*(min|minutes?|h|heures?|hours?)\s*$/i,
         /facile|difficile|moyen|easy|medium|hard/i,
         /^\s*(bon appetit|enjoy|bonne degustation)/i,
+        // Codes promo et marketing
+        /\d+%\s*(de\s+)?(reduction|reduc|off|discount)/i,
+        /(code|promo|coupon)\s*:?\s*[A-Z0-9]+/i,
+        /avec\s+le\s+code\s+[A-Z0-9]+/i,
+        /@[A-Za-z0-9_]+/,                    // @mentions seules
+        /site\s+(officiel|web)/i,
     ];
 
     // Nombres en lettres
@@ -376,6 +382,10 @@ const IngredientParser = (function() {
         'demi': 0.5,
         'demie': 0.5,
         'quart': 0.25,
+        // Quantites imprecises (on met null pour indiquer "a volonte")
+        'quelques': null,
+        'plusieurs': null,
+        'peu': null,
     };
 
     /**
@@ -636,9 +646,9 @@ const IngredientParser = (function() {
         }
 
         // Pattern principal: quantite au debut
-        // Ex: "200g de farine", "2 gousses d'ail", "1/2 cup flour", "1 1/2 tsp salt"
+        // Ex: "200g de farine", "2 gousses d'ail", "1/2 cup flour", "1 1/2 tsp salt", "quelques lamelles"
         // IMPORTANT: Les fractions doivent etre testees AVANT les nombres simples
-        const qtyPattern = /^(\d+\s+\d+\s*\/\s*\d+|\d+\s*\/\s*\d+|\d+[,.]?\d*|un|une|deux|trois|quatre|cinq|six|sept|huit|neuf|dix|demi|demie)\s*(.*)$/i;
+        const qtyPattern = /^(\d+\s+\d+\s*\/\s*\d+|\d+\s*\/\s*\d+|\d+[,.]?\d*|un|une|deux|trois|quatre|cinq|six|sept|huit|neuf|dix|demi|demie|quelques|plusieurs|peu)\s*(.*)$/i;
         const qtyMatch = cleanedLine.match(qtyPattern);
 
         if (qtyMatch) {
