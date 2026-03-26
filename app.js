@@ -78,7 +78,7 @@
         setTimeout(() => {
             toast.style.opacity = '0';
             setTimeout(() => toast.remove(), 300);
-        }, 3000);
+        }, 6000);
     }
 
     function showNoIngredientsError() {

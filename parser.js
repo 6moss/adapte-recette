@@ -780,8 +780,13 @@ const IngredientParser = (function() {
         // Extrait la section ingredients si possible
         const section = extractIngredientSection(text);
 
-        // Separe par lignes
+        // Emojis couramment utilises comme separateurs dans les reseaux sociaux
+        // 🥄 cuillere, 👉 fleche, ➡️ fleche, ✅ check, ▪️ puce, 🔸🔹 losanges, 🌿 herbe, ✨ etoile
+        const emojiSeparators = /[\u{1F944}\u{1F449}\u{27A1}\u{2705}\u{25AA}\u{25AB}\u{1F538}\u{1F539}\u{1F33F}\u{2728}\u{1F34E}\u{1F345}\u{1F952}\u{1F955}\u{1F951}]/gu;
+
+        // Separe par lignes ET par emojis separateurs
         const lines = section
+            .replace(emojiSeparators, '\n')  // Remplace les emojis separateurs par des sauts de ligne
             .split(/[\n\r]+/)
             .map(line => line.trim())
             .filter(line => line.length > 0);
