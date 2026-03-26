@@ -90,19 +90,19 @@
         popup.className = 'error-popup';
         popup.innerHTML = `
             <div class="error-popup-content">
-                <h4>Aucun ingredient detecte</h4>
-                <p>La description ne semble pas contenir d'ingredients au format reconnaissable.</p>
+                <h4>Aucun ingrédient détecté</h4>
+                <p>La description ne semble pas contenir d'ingrédients au format reconnaissable.</p>
                 <p><strong>Causes possibles :</strong></p>
                 <ul>
-                    <li>Les ingredients sont dans les commentaires ou une autre publication</li>
+                    <li>Les ingrédients sont dans les commentaires ou une autre publication</li>
                     <li>La description contient uniquement du texte ou des emojis</li>
-                    <li>Le format des ingredients n'est pas standard (ex: "200g farine")</li>
+                    <li>Le format des ingrédients n'est pas standard (ex: "200g farine")</li>
                 </ul>
                 <p><strong>Solutions :</strong></p>
                 <ul>
-                    <li>Copiez les ingredients depuis les commentaires</li>
-                    <li>Reformulez au format "quantite + ingredient" (ex: 200g farine)</li>
-                    <li>Utilisez l'onglet "Manuel" pour saisir les ingredients</li>
+                    <li>Copiez les ingrédients depuis les commentaires</li>
+                    <li>Reformulez au format "quantité + ingrédient" (ex: 200g farine)</li>
+                    <li>Utilisez l'onglet "Manuel" pour saisir les ingrédients</li>
                 </ul>
                 <button class="btn btn-primary error-popup-close">Compris</button>
             </div>
@@ -122,15 +122,15 @@
     function formatNumber(num) {
         if (num === null || num === undefined) return '';
 
-        // Arrondir a 2 decimales
+        // Arrondir à 2 décimales
         const rounded = Math.round(num * 100) / 100;
 
-        // Si c'est un entier, ne pas afficher de decimales
+        // Si c'est un entier, ne pas afficher de décimales
         if (rounded === Math.floor(rounded)) {
             return rounded.toString();
         }
 
-        // Afficher avec virgule (format francais)
+        // Afficher avec virgule (format français)
         return rounded.toString().replace('.', ',');
     }
 
@@ -171,7 +171,7 @@
 
         // Check if it's Instagram, TikTok or Facebook
         if (!url.includes('instagram.com') && !url.includes('tiktok.com') && !url.includes('facebook.com') && !url.includes('fb.watch')) {
-            showToast('Seuls Instagram, TikTok et Facebook sont supportes', 'error');
+            showToast('Seuls Instagram, TikTok et Facebook sont supportés', 'error');
             return;
         }
 
@@ -193,23 +193,23 @@
 
                 if (parsed.length > 0) {
                     setIngredients(parsed, portions);
-                    showToast(`${parsed.length} ingredient(s) trouve(s)`, 'success');
+                    showToast(`${parsed.length} ingrédient(s) trouvé(s)`, 'success');
                 } else {
                     // Fallback to description tab with the text
                     switchToDescriptionTab(data.description);
-                    showToast('Description recuperee mais aucun ingredient detecte. Cliquez sur "Extraire" ou reformulez le texte.', 'info');
+                    showToast('Description récupérée mais aucun ingrédient détecté. Cliquez sur "Extraire" ou reformulez le texte.', 'info');
                 }
             } else if (data.fallback || data.error) {
                 // API failed, switch to description tab
                 switchToDescriptionTab('');
                 showToast(data.error || 'Copiez-collez la description manuellement', 'error');
             } else {
-                throw new Error('Aucune description trouvee');
+                throw new Error('Aucune description trouvée');
             }
         } catch (error) {
             console.error('Fetch error:', error);
             switchToDescriptionTab('');
-            showToast('Erreur reseau. Collez la description manuellement.', 'error');
+            showToast('Erreur réseau. Collez la description manuellement.', 'error');
         } finally {
             hideLoading();
         }
@@ -240,7 +240,7 @@
 
         if (parsed.length > 0) {
             setIngredients(parsed, portions);
-            showToast(`${parsed.length} ingredient(s) extrait(s)`, 'success');
+            showToast(`${parsed.length} ingrédient(s) extrait(s)`, 'success');
         } else {
             showNoIngredientsError();
         }
@@ -252,9 +252,9 @@
         const row = document.createElement('div');
         row.className = 'manual-row';
         row.innerHTML = `
-            <input type="number" class="ingredient-qty" placeholder="Qte" step="any" value="${ingredient?.quantity || ''}">
-            <input type="text" class="ingredient-unit" placeholder="Unite" value="${ingredient?.unit || ''}">
-            <input type="text" class="ingredient-name" placeholder="Ingredient" value="${ingredient?.name || ''}">
+            <input type="number" class="ingredient-qty" placeholder="Qté" step="any" value="${ingredient?.quantity || ''}">
+            <input type="text" class="ingredient-unit" placeholder="Unité" value="${ingredient?.unit || ''}">
+            <input type="text" class="ingredient-name" placeholder="Ingrédient" value="${ingredient?.name || ''}">
             <button class="btn-icon btn-remove" title="Supprimer">&times;</button>
         `;
 
@@ -306,16 +306,16 @@
         ingredients = newIngredients;
 
         if (portions !== null) {
-            // Portions detectees dans le texte
+            // Portions détectées dans le texte
             originalPortions = portions;
             elements.portionsOriginal.value = portions;
-            // Target toujours superieur a l'original (au moins +1, minimum 2)
+            // Target toujours supérieur à l'original (au moins +1, minimum 2)
             const targetPortions = Math.max(portions + 1, 2);
             elements.portionsTarget.value = targetPortions;
             elements.portionsOriginalGroup.classList.remove('needs-check');
             elements.portionsOriginalGroup.classList.add('confirmed');
         } else {
-            // Portions non detectees - afficher l'indicateur
+            // Portions non détectées - afficher l'indicateur
             elements.portionsOriginalGroup.classList.add('needs-check');
             elements.portionsOriginalGroup.classList.remove('confirmed');
         }
@@ -414,7 +414,7 @@
         addManualIngredient();
 
         hideSections();
-        showToast('Liste reinitalisee');
+        showToast('Liste réinitialisée');
     }
 
     // ==================== CALCULATION ====================
@@ -438,7 +438,7 @@
         // Portions original change
         elements.portionsOriginal.addEventListener('change', (e) => {
             originalPortions = parseInt(e.target.value) || 4;
-            // Marquer comme confirme quand l'utilisateur modifie manuellement
+            // Marquer comme confirmé quand l'utilisateur modifie manuellement
             elements.portionsOriginalGroup.classList.remove('needs-check');
             elements.portionsOriginalGroup.classList.add('confirmed');
             updateResults();
@@ -501,7 +501,7 @@
             elements.resultPortions.textContent = `Pour ${target} portion(s) (x${formatNumber(multiplier)})`;
         } else {
             const newPortions = Math.round(originalPortions * multiplier);
-            elements.resultPortions.textContent = `Quantites x${formatNumber(multiplier)} (environ ${newPortions} portions)`;
+            elements.resultPortions.textContent = `Quantités x${formatNumber(multiplier)} (environ ${newPortions} portions)`;
         }
 
         // Render results
@@ -540,7 +540,7 @@
             text += `Pour ${target} portion(s):\n\n`;
         } else {
             const newPortions = Math.round(originalPortions * multiplier);
-            text += `Quantites x${formatNumber(multiplier)} (${newPortions} portions):\n\n`;
+            text += `Quantités x${formatNumber(multiplier)} (${newPortions} portions):\n\n`;
         }
 
         ingredients.forEach(ing => {
@@ -555,7 +555,7 @@
         });
 
         navigator.clipboard.writeText(text).then(() => {
-            showToast('Liste copiee!', 'success');
+            showToast('Liste copiée !', 'success');
         }).catch(() => {
             showToast('Erreur lors de la copie', 'error');
         });

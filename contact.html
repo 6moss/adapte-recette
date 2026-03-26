@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Contactez l'equipe d'Adapte Recette pour toute question ou suggestion.">
+    <meta name="description" content="Contactez l'équipe d'Adapte Recette pour toute question ou suggestion.">
     <meta name="theme-color" content="#E07A5F">
     <title>Contact - Adapte Recette</title>
     <link rel="manifest" href="manifest.json">
@@ -19,7 +19,7 @@
                 <img src="logo-adapte-recette.svg" alt="Adapte Recette" class="header-logo">
                 <h1>Adapte Recette</h1>
             </a>
-            <p class="subtitle">Ajustez les quantites en un clic</p>
+            <p class="subtitle">Ajustez les quantités en un clic</p>
         </header>
 
         <main>
@@ -27,7 +27,7 @@
                 <h2>Nous contacter</h2>
 
                 <section>
-                    <p>Une question, une suggestion ou un bug a signaler ? Remplissez le formulaire ci-dessous et nous vous repondrons dans les plus brefs delais.</p>
+                    <p>Une question, une suggestion ou un bug à signaler ? Remplissez le formulaire ci-dessous et nous vous répondrons dans les plus brefs délais.</p>
                 </section>
 
                 <form id="contact-form" class="contact-form" action="https://formspree.io/f/xwvwkyvo" method="POST">
@@ -46,7 +46,7 @@
 
                     <div class="form-group">
                         <label for="message">Votre message *</label>
-                        <textarea id="message" name="message" rows="6" required placeholder="Decrivez votre question, suggestion ou probleme..."></textarea>
+                        <textarea id="message" name="message" rows="6" required placeholder="Décrivez votre question, suggestion ou problème..."></textarea>
                     </div>
 
                     <input type="hidden" name="_subject" value="[Adapte Recette] Nouveau message">
@@ -60,12 +60,12 @@
                 </form>
 
                 <section>
-                    <h3>Signaler un probleme avec une recette</h3>
-                    <p>Si vous rencontrez un probleme avec une recette specifique, merci de preciser dans votre message :</p>
+                    <h3>Signaler un problème avec une recette</h3>
+                    <p>Si vous rencontrez un problème avec une recette spécifique, merci de préciser dans votre message :</p>
                     <ul>
-                        <li>L'URL de la recette ou le texte copie</li>
-                        <li>Le resultat obtenu</li>
-                        <li>Le resultat attendu</li>
+                        <li>L'URL de la recette ou le texte copié</li>
+                        <li>Le résultat obtenu</li>
+                        <li>Le résultat attendu</li>
                     </ul>
                 </section>
             </article>
@@ -103,7 +103,7 @@
 
                 if (response.ok) {
                     status.className = 'form-status success';
-                    status.textContent = 'Message envoye avec succes ! Nous vous repondrons rapidement.';
+                    status.textContent = 'Message envoyé avec succès ! Nous vous répondrons rapidement.';
                     form.reset();
                 } else {
                     const data = await response.json();
@@ -112,7 +112,7 @@
                 }
             } catch (error) {
                 status.className = 'form-status error';
-                status.textContent = 'Erreur de connexion. Veuillez reessayer.';
+                status.textContent = 'Erreur de connexion. Veuillez réessayer.';
             } finally {
                 btnText.style.display = 'inline';
                 btnLoading.style.display = 'none';

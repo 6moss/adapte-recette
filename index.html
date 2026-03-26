@@ -3,10 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Calculateur gratuit pour adapter les quantites d'une recette au nombre de personnes. Calcul recette automatique, tableau de proportionnalite et conversion des mesures.">
+    <meta name="description" content="Calculateur gratuit pour adapter les quantités d'une recette au nombre de personnes. Calcul recette automatique, tableau de proportionnalité et conversion des mesures.">
     <meta name="theme-color" content="#E07A5F">
     <meta name="google-site-verification" content="aMyrA-Rj5r2kFNnCdlcsRhYM-CmqGGEdVqoCJx9DFxA" />
-    <title>Adapter les quantites d'une recette | Calcul recette gratuit - Adapte Recette</title>
+    <title>Adapter les quantités d'une recette | Calcul recette gratuit - Adapte Recette</title>
     <link rel="manifest" href="manifest.json">
     <link rel="icon" type="image/svg+xml" href="icons/icon.svg">
     <link rel="apple-touch-icon" href="icons/icon-192.png">
@@ -19,13 +19,13 @@
     <div class="container">
         <header>
             <h1><img src="logo-adapte-recette.svg" alt="Adapte Recette - Calculateur de recette gratuit" class="header-logo"></h1>
-            <p class="subtitle">Adaptez les quantites de vos recettes en un clic</p>
+            <p class="subtitle">Adaptez les quantités de vos recettes en un clic</p>
         </header>
 
         <main>
             <!-- Section Import -->
             <section class="card import-section">
-                <h2>Importer les ingredients</h2>
+                <h2>Importer les ingrédients</h2>
 
                 <div class="tabs">
                     <button class="tab active" data-tab="url">URL</button>
@@ -39,9 +39,9 @@
                         <label for="url-input">Collez l'URL du Reel ou TikTok</label>
                         <div class="input-group">
                             <input type="url" id="url-input" placeholder="https://www.instagram.com/reel/...">
-                            <button id="fetch-btn" class="btn btn-primary">Recuperer</button>
+                            <button id="fetch-btn" class="btn btn-primary">Récupérer</button>
                         </div>
-                        <p class="hint">Instagram, TikTok et Facebook supportes</p>
+                        <p class="hint">Instagram, TikTok et Facebook supportés</p>
                     </div>
 
                     <!-- Tab Description -->
@@ -52,8 +52,8 @@ Pour 4 personnes:
 - 200g de farine
 - 3 oeufs
 - 50cl de lait
-- 1 pincee de sel"></textarea>
-                        <button id="extract-btn" class="btn btn-primary">Extraire les ingredients</button>
+- 1 pincée de sel"></textarea>
+                        <button id="extract-btn" class="btn btn-primary">Extraire les ingrédients</button>
                         <details class="help-details">
                             <summary>Comment copier la description ?</summary>
                             <div class="help-content">
@@ -61,13 +61,13 @@ Pour 4 personnes:
                                 <ol>
                                     <li>Ouvrez le Reel dans l'app</li>
                                     <li>Appuyez sur "... plus" sous la description</li>
-                                    <li>Maintenez appuye sur le texte et selectionnez "Copier"</li>
+                                    <li>Maintenez appuyé sur le texte et sélectionnez "Copier"</li>
                                 </ol>
                                 <p><strong>TikTok :</strong></p>
                                 <ol>
-                                    <li>Ouvrez la video dans l'app</li>
+                                    <li>Ouvrez la vidéo dans l'app</li>
                                     <li>Appuyez sur la description pour la voir en entier</li>
-                                    <li>Maintenez appuye et copiez le texte</li>
+                                    <li>Maintenez appuyé et copiez le texte</li>
                                 </ol>
                             </div>
                         </details>
@@ -77,13 +77,13 @@ Pour 4 personnes:
                     <div class="tab-panel" id="tab-manual">
                         <div class="manual-form">
                             <div class="manual-row">
-                                <input type="number" class="ingredient-qty" placeholder="Qte" step="any">
-                                <input type="text" class="ingredient-unit" placeholder="Unite">
-                                <input type="text" class="ingredient-name" placeholder="Ingredient">
+                                <input type="number" class="ingredient-qty" placeholder="Qté" step="any">
+                                <input type="text" class="ingredient-unit" placeholder="Unité">
+                                <input type="text" class="ingredient-name" placeholder="Ingrédient">
                                 <button class="btn-icon btn-add" title="Ajouter">+</button>
                             </div>
                         </div>
-                        <button id="add-ingredient-btn" class="btn btn-secondary">+ Ajouter un ingredient</button>
+                        <button id="add-ingredient-btn" class="btn btn-secondary">+ Ajouter un ingrédient</button>
                     </div>
                 </div>
             </section>
@@ -101,14 +101,14 @@ Pour 4 personnes:
 
             <!-- Section Calcul (avec portions d'origine) -->
             <section class="card calculation-section" id="calculation-section" style="display: none;">
-                <h2>Adapter les quantites</h2>
+                <h2>Adapter les quantités</h2>
 
                 <div class="portions-row">
                     <div class="portions-original" id="portions-original-group">
                         <label for="portions-original">Recette pour</label>
                         <input type="number" id="portions-original" value="4" min="1">
                         <span>pers.</span>
-                        <span class="portions-hint" id="portions-hint">(a verifier)</span>
+                        <span class="portions-hint" id="portions-hint">(à vérifier)</span>
                     </div>
                     <span class="portions-arrow">→</span>
                     <div class="portions-target-group">
@@ -145,9 +145,9 @@ Pour 4 personnes:
                 </div>
             </section>
 
-            <!-- Section Resultat -->
+            <!-- Section Résultat -->
             <section class="card result-section" id="result-section" style="display: none;">
-                <h2>Quantites adaptees</h2>
+                <h2>Quantités adaptées</h2>
                 <div class="result-info">
                     <span id="result-portions"></span>
                 </div>
@@ -157,10 +157,10 @@ Pour 4 personnes:
                 <button id="copy-result-btn" class="btn btn-secondary">Copier la liste</button>
             </section>
 
-            <!-- Section Ingredients (pliable) -->
+            <!-- Section Ingrédients (pliable) -->
             <section class="card ingredients-section collapsible" id="ingredients-section" style="display: none;">
                 <div class="collapsible-header" id="ingredients-toggle">
-                    <h2>Ingredients <span class="ingredient-count"></span></h2>
+                    <h2>Ingrédients <span class="ingredient-count"></span></h2>
                     <span class="collapse-icon">▼</span>
                 </div>
 
@@ -169,22 +169,22 @@ Pour 4 personnes:
                         <!-- Ingredients will be added here dynamically -->
                     </div>
 
-                    <button id="clear-ingredients-btn" class="btn btn-secondary">Reinitialiser</button>
+                    <button id="clear-ingredients-btn" class="btn btn-secondary">Réinitialiser</button>
                 </div>
             </section>
 
             <!-- SEO Content Section -->
             <section class="card content-page seo-section">
                 <h2>Comment calculer une recette pour plus ou moins de personnes ?</h2>
-                <p>Adapter les quantites d'une recette est essentiel quand vous cuisinez pour un nombre different de convives. Notre <strong>calculateur de recette gratuit</strong> vous permet de :</p>
+                <p>Adapter les quantités d'une recette est essentiel quand vous cuisinez pour un nombre différent de convives. Notre <strong>calculateur de recette gratuit</strong> vous permet de :</p>
                 <ul>
-                    <li><strong>Calculer automatiquement</strong> les nouvelles quantites selon le nombre de portions</li>
-                    <li>Utiliser un <strong>tableau de proportionnalite</strong> pour vos recettes de cuisine</li>
-                    <li>Effectuer le <strong>calcul des quantites en patisserie</strong> avec precision</li>
+                    <li><strong>Calculer automatiquement</strong> les nouvelles quantités selon le nombre de portions</li>
+                    <li>Utiliser un <strong>tableau de proportionnalité</strong> pour vos recettes de cuisine</li>
+                    <li>Effectuer le <strong>calcul des quantités en pâtisserie</strong> avec précision</li>
                     <li>Adapter les recettes de <strong>Thermomix, Companion ou Monsieur Cuisine</strong></li>
                 </ul>
                 <h3>Calcul recette : la formule simple</h3>
-                <p>Pour adapter une recette, divisez chaque quantite par le nombre de portions original, puis multipliez par le nombre souhaite. Notre outil fait ce calcul automatiquement pour vous !</p>
+                <p>Pour adapter une recette, divisez chaque quantité par le nombre de portions original, puis multipliez par le nombre souhaité. Notre outil fait ce calcul automatiquement pour vous !</p>
                 <p><a href="/blog/adapter-recette-nombre-personnes">En savoir plus sur l'adaptation des recettes</a></p>
             </section>
         </main>
@@ -203,6 +203,6 @@ Pour 4 personnes:
 
     <script src="footer.js"></script>
     <script src="parser.js?v=8"></script>
-    <script src="app.js?v=7"></script>
+    <script src="app.js?v=8"></script>
 </body>
 </html>
