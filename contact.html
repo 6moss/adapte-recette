@@ -9,7 +9,7 @@
     <link rel="manifest" href="manifest.json">
     <link rel="icon" type="image/svg+xml" href="icons/icon.svg">
     <link rel="apple-touch-icon" href="icons/icon-192.png">
-    <link rel="stylesheet" href="style.css?v=5">
+    <link rel="stylesheet" href="style.css?v=6">
     <link rel="canonical" href="https://adapte-recette.fr/contact">
 </head>
 <body>
@@ -31,9 +31,6 @@
                 </section>
 
                 <form id="contact-form" class="contact-form">
-                    <!-- Honeypot anti-spam -->
-                    <input type="text" name="_honeypot" style="display:none" tabindex="-1" autocomplete="off">
-
                     <div class="form-group">
                         <label for="name">Votre nom *</label>
                         <input type="text" id="name" name="name" required placeholder="Jean Dupont">
@@ -50,11 +47,8 @@
                     </div>
 
                     <button type="submit" class="btn btn-primary btn-submit">
-                        <span class="btn-text">Envoyer le message</span>
-                        <span class="btn-loading" style="display:none;">Envoi en cours...</span>
+                        Envoyer le message
                     </button>
-
-                    <div id="form-status" class="form-status"></div>
                 </form>
 
                 <section>
@@ -75,53 +69,26 @@
     <script src="footer.js"></script>
     <script>
         const form = document.getElementById('contact-form');
-        const status = document.getElementById('form-status');
-        const submitBtn = form.querySelector('.btn-submit');
-        const btnText = submitBtn.querySelector('.btn-text');
-        const btnLoading = submitBtn.querySelector('.btn-loading');
 
-        form.addEventListener('submit', async (e) => {
+        form.addEventListener('submit', (e) => {
             e.preventDefault();
 
-            // Show loading state
-            btnText.style.display = 'none';
-            btnLoading.style.display = 'inline';
-            submitBtn.disabled = true;
-            status.className = 'form-status';
-            status.textContent = '';
+            const name = form.name.value.trim();
+            const email = form.email.value.trim();
+            const message = form.message.value.trim();
 
-            const formData = {
-                name: form.name.value,
-                email: form.email.value,
-                message: form.message.value,
-                _honeypot: form._honeypot.value
-            };
-
-            try {
-                const response = await fetch('/api/contact', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(formData)
-                });
-
-                const data = await response.json();
-
-                if (response.ok) {
-                    status.className = 'form-status success';
-                    status.textContent = 'Message envoye avec succes ! Nous vous repondrons rapidement.';
-                    form.reset();
-                } else {
-                    status.className = 'form-status error';
-                    status.textContent = data.error || 'Une erreur est survenue. Veuillez reessayer.';
-                }
-            } catch (error) {
-                status.className = 'form-status error';
-                status.textContent = 'Erreur de connexion. Veuillez reessayer.';
-            } finally {
-                btnText.style.display = 'inline';
-                btnLoading.style.display = 'none';
-                submitBtn.disabled = false;
+            if (!name || !email || !message) {
+                alert('Veuillez remplir tous les champs');
+                return;
             }
+
+            // Compose mailto link
+            const subject = encodeURIComponent(`[Adapte Recette] Message de ${name}`);
+            const body = encodeURIComponent(`Nom: ${name}\nEmail: ${email}\n\nMessage:\n${message}`);
+            const mailtoLink = `mailto:alban.latier@gmail.com?subject=${subject}&body=${body}`;
+
+            // Open email client
+            window.location.href = mailtoLink;
         });
     </script>
 </body>
