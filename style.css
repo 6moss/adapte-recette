@@ -1265,3 +1265,26 @@ footer {
     width: 100%;
     margin-top: 0.5rem;
 }
+
+/* Smart adjustments indicators */
+.result-item-qty.adjusted {
+    color: var(--color-success);
+    font-weight: 700;
+    cursor: help;
+}
+
+.adj-icon {
+    font-size: 0.85em;
+    margin-left: 0.25rem;
+    cursor: help;
+}
+
+.smart-note {
+    font-size: 0.85rem;
+    color: var(--color-text-light);
+    margin-top: 0.75rem;
+    padding: 0.75rem;
+    background: var(--color-bg);
+    border-radius: var(--radius-sm);
+    border-left: 3px solid var(--color-success);
+}

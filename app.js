@@ -9,6 +9,112 @@
     let ingredients = [];
     let originalPortions = 4;
 
+    // ==================== CATÉGORIES D'INGRÉDIENTS ====================
+    // Règles intelligentes selon le type d'ingrédient
+
+    const INGREDIENT_CATEGORIES = {
+        // Épices et aromates : ne pas multiplier proportionnellement
+        spices: [
+            'sel', 'poivre', 'piment', 'paprika', 'cumin', 'curry', 'curcuma',
+            'cannelle', 'muscade', 'gingembre', 'cardamome', 'coriandre',
+            'thym', 'romarin', 'basilic', 'persil', 'ciboulette', 'aneth',
+            'menthe', 'origan', 'laurier', 'sauge', 'estragon', 'cerfeuil',
+            'herbes de provence', 'bouquet garni', 'fines herbes',
+            'ail', 'oignon', 'echalote', 'échalote',
+            'vanille', 'safran', 'clou de girofle', 'anis', 'fenouil',
+            'piment d\'espelette', 'cayenne', 'tabasco', 'harissa',
+            'noix de muscade', 'quatre épices', '4 épices',
+            'herbes', 'épices', 'aromates', 'assaisonnement'
+        ],
+        // Levures et agents levants : plafonner à x2
+        leavening: [
+            'levure', 'levure chimique', 'levure boulangère', 'levure de boulanger',
+            'levure fraîche', 'levure sèche', 'levure instantanée',
+            'bicarbonate', 'bicarbonate de soude', 'baking powder', 'baking soda',
+            'poudre à lever', 'poudre levante'
+        ],
+        // Matières grasses de cuisson : ne pas multiplier au-delà de x1.5
+        cookingFat: [
+            'huile pour la cuisson', 'huile de cuisson',
+            'beurre pour la poêle', 'beurre pour graisser',
+            'huile pour friture', 'huile de friture',
+            'graisse', 'saindoux', 'margarine pour cuisson'
+        ]
+    };
+
+    /**
+     * Détecte la catégorie d'un ingrédient
+     */
+    function getIngredientCategory(ingredientName) {
+        if (!ingredientName) return 'standard';
+        const name = ingredientName.toLowerCase()
+            .normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+
+        for (const [category, keywords] of Object.entries(INGREDIENT_CATEGORIES)) {
+            for (const keyword of keywords) {
+                const normalizedKeyword = keyword.toLowerCase()
+                    .normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+                if (name.includes(normalizedKeyword) || normalizedKeyword.includes(name)) {
+                    return category;
+                }
+            }
+        }
+        return 'standard';
+    }
+
+    /**
+     * Calcule le multiplicateur ajusté selon la catégorie
+     * Basé sur les règles de l'article /blog/adapter-recette-nombre-personnes
+     */
+    function getAdjustedMultiplier(baseMultiplier, category) {
+        switch (category) {
+            case 'spices':
+                // Épices : x2 → 1.5x, x3 → 2x, /2 → 0.65x
+                if (baseMultiplier >= 3) {
+                    return 2;
+                } else if (baseMultiplier >= 2) {
+                    return 1.5;
+                } else if (baseMultiplier <= 0.5) {
+                    return 0.65;
+                } else if (baseMultiplier < 1) {
+                    // Interpolation linéaire entre 0.5 et 1
+                    return 0.65 + (baseMultiplier - 0.5) * (1 - 0.65) / 0.5;
+                } else {
+                    // Entre 1 et 2 : interpolation
+                    return 1 + (baseMultiplier - 1) * 0.5;
+                }
+
+            case 'leavening':
+                // Levure : plafonner à x2
+                return Math.min(baseMultiplier, 2);
+
+            case 'cookingFat':
+                // Matières grasses de cuisson : plafonner à x1.5
+                return Math.min(baseMultiplier, 1.5);
+
+            default:
+                return baseMultiplier;
+        }
+    }
+
+    /**
+     * Retourne une info-bulle explicative pour l'ajustement
+     */
+    function getAdjustmentTooltip(category, baseMultiplier, adjustedMultiplier) {
+        if (baseMultiplier === adjustedMultiplier) return null;
+
+        switch (category) {
+            case 'spices':
+                return `Ajusté : les épices ne se multiplient pas proportionnellement (x${formatNumber(adjustedMultiplier)} au lieu de x${formatNumber(baseMultiplier)})`;
+            case 'leavening':
+                return `Plafonné à x2 : trop de levure fait s'effondrer les gâteaux`;
+            case 'cookingFat':
+                return `Ajusté : la quantité d'huile de cuisson dépend de la taille de la poêle, pas des portions`;
+            default:
+                return null;
+        }
+    }
+
     // DOM Elements
     const elements = {
         // Tabs
@@ -492,45 +598,86 @@
     }
 
     function updateResults() {
-        const multiplier = getMultiplier();
+        const baseMultiplier = getMultiplier();
 
         // Update result info
         const mode = document.querySelector('input[name="calc-mode"]:checked').value;
         if (mode === 'portions') {
             const target = parseInt(elements.portionsTarget.value) || originalPortions;
-            elements.resultPortions.textContent = `Pour ${target} portion(s) (x${formatNumber(multiplier)})`;
+            elements.resultPortions.textContent = `Pour ${target} portion(s) (x${formatNumber(baseMultiplier)})`;
         } else {
-            const newPortions = Math.round(originalPortions * multiplier);
-            elements.resultPortions.textContent = `Quantités x${formatNumber(multiplier)} (environ ${newPortions} portions)`;
+            const newPortions = Math.round(originalPortions * baseMultiplier);
+            elements.resultPortions.textContent = `Quantités x${formatNumber(baseMultiplier)} (environ ${newPortions} portions)`;
         }
 
-        // Render results
+        // Render results with smart adjustments
         elements.resultList.innerHTML = '';
+        let hasAdjustments = false;
 
         ingredients.forEach(ing => {
             const item = document.createElement('div');
             item.className = 'result-item';
 
+            // Détecte la catégorie et applique l'ajustement
+            const category = getIngredientCategory(ing.name);
+            const adjustedMultiplier = getAdjustedMultiplier(baseMultiplier, category);
+            const isAdjusted = Math.abs(adjustedMultiplier - baseMultiplier) > 0.01;
+
+            if (isAdjusted) hasAdjustments = true;
+
             let qtyText = '';
+            let tooltip = '';
+
             if (ing.quantity !== null && ing.quantity !== undefined) {
-                const newQty = ing.quantity * multiplier;
+                const newQty = ing.quantity * adjustedMultiplier;
                 qtyText = `${formatNumber(newQty)}${ing.unit ? ' ' + ing.unit : ''}`;
+
+                if (isAdjusted) {
+                    tooltip = getAdjustmentTooltip(category, baseMultiplier, adjustedMultiplier);
+                }
             } else if (ing.unit) {
                 qtyText = ing.unit;
             }
 
+            // Classe CSS pour les ajustements
+            const adjustedClass = isAdjusted ? 'adjusted' : '';
+            const categoryIcon = isAdjusted ? getCategoryIcon(category) : '';
+
             item.innerHTML = `
-                <span class="result-item-qty">${qtyText}</span>
+                <span class="result-item-qty ${adjustedClass}" ${tooltip ? `title="${tooltip}"` : ''}>${qtyText}${categoryIcon}</span>
                 <span class="result-item-name">${ing.name}</span>
             `;
             elements.resultList.appendChild(item);
         });
+
+        // Affiche un message si des ajustements ont été faits
+        const existingNote = elements.resultSection.querySelector('.smart-note');
+        if (existingNote) existingNote.remove();
+
+        if (hasAdjustments && baseMultiplier !== 1) {
+            const note = document.createElement('p');
+            note.className = 'smart-note';
+            note.innerHTML = '⚡ <em>Certaines quantités ont été ajustées intelligemment (épices, levure). Survolez pour plus d\'infos.</em>';
+            elements.resultList.after(note);
+        }
+    }
+
+    /**
+     * Retourne une icône pour la catégorie
+     */
+    function getCategoryIcon(category) {
+        switch (category) {
+            case 'spices': return ' <span class="adj-icon" title="Épices ajustées">🌿</span>';
+            case 'leavening': return ' <span class="adj-icon" title="Levure plafonnée">⬆️</span>';
+            case 'cookingFat': return ' <span class="adj-icon" title="Huile ajustée">🍳</span>';
+            default: return '';
+        }
     }
 
     // ==================== COPY RESULT ====================
 
     function copyResult() {
-        const multiplier = getMultiplier();
+        const baseMultiplier = getMultiplier();
         const mode = document.querySelector('input[name="calc-mode"]:checked').value;
 
         let text = '';
@@ -539,14 +686,18 @@
             const target = parseInt(elements.portionsTarget.value) || originalPortions;
             text += `Pour ${target} portion(s):\n\n`;
         } else {
-            const newPortions = Math.round(originalPortions * multiplier);
-            text += `Quantités x${formatNumber(multiplier)} (${newPortions} portions):\n\n`;
+            const newPortions = Math.round(originalPortions * baseMultiplier);
+            text += `Quantités x${formatNumber(baseMultiplier)} (${newPortions} portions):\n\n`;
         }
 
         ingredients.forEach(ing => {
+            // Applique les mêmes ajustements que pour l'affichage
+            const category = getIngredientCategory(ing.name);
+            const adjustedMultiplier = getAdjustedMultiplier(baseMultiplier, category);
+
             let line = '';
             if (ing.quantity !== null && ing.quantity !== undefined) {
-                const newQty = ing.quantity * multiplier;
+                const newQty = ing.quantity * adjustedMultiplier;
                 line = `- ${formatNumber(newQty)}${ing.unit ? ' ' + ing.unit : ''} ${ing.name}`;
             } else {
                 line = `- ${ing.unit ? ing.unit + ' ' : ''}${ing.name}`;
