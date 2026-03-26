@@ -9,7 +9,7 @@
     <link rel="manifest" href="manifest.json">
     <link rel="icon" type="image/svg+xml" href="icons/icon.svg">
     <link rel="apple-touch-icon" href="icons/icon-192.png">
-    <link rel="stylesheet" href="style.css?v=4">
+    <link rel="stylesheet" href="style.css?v=5">
     <link rel="canonical" href="https://adapte-recette.fr/contact">
 </head>
 <body>
@@ -27,54 +27,102 @@
                 <h2>Nous contacter</h2>
 
                 <section>
-                    <h3>Une question ? Une suggestion ?</h3>
-                    <p>Nous sommes toujours ravis d'avoir de vos nouvelles ! N'hesitez pas a nous contacter pour :</p>
-                    <ul>
-                        <li>Signaler un bug ou un probleme technique</li>
-                        <li>Suggerer une nouvelle fonctionnalite</li>
-                        <li>Proposer un partenariat</li>
-                        <li>Toute autre question</li>
-                    </ul>
+                    <p>Une question, une suggestion ou un bug a signaler ? Remplissez le formulaire ci-dessous et nous vous repondrons dans les plus brefs delais.</p>
                 </section>
 
-                <section>
-                    <h3>Par email</h3>
-                    <p>Ecrivez-nous a : <a href="mailto:contact@adapte-recette.fr">contact@adapte-recette.fr</a></p>
-                    <p>Nous nous efforcons de repondre sous 48 heures.</p>
-                </section>
+                <form id="contact-form" class="contact-form">
+                    <!-- Honeypot anti-spam -->
+                    <input type="text" name="_honeypot" style="display:none" tabindex="-1" autocomplete="off">
 
-                <section>
-                    <h3>Sur les reseaux sociaux</h3>
-                    <p>Suivez-nous pour des astuces cuisine et les nouveautes de l'application :</p>
-                    <div class="social-links">
-                        <a href="#" class="social-link" target="_blank" rel="noopener">Instagram</a>
-                        <a href="#" class="social-link" target="_blank" rel="noopener">TikTok</a>
+                    <div class="form-group">
+                        <label for="name">Votre nom *</label>
+                        <input type="text" id="name" name="name" required placeholder="Jean Dupont">
                     </div>
-                </section>
+
+                    <div class="form-group">
+                        <label for="email">Votre email *</label>
+                        <input type="email" id="email" name="email" required placeholder="jean@exemple.fr">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="message">Votre message *</label>
+                        <textarea id="message" name="message" rows="6" required placeholder="Decrivez votre question, suggestion ou probleme..."></textarea>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary btn-submit">
+                        <span class="btn-text">Envoyer le message</span>
+                        <span class="btn-loading" style="display:none;">Envoi en cours...</span>
+                    </button>
+
+                    <div id="form-status" class="form-status"></div>
+                </form>
 
                 <section>
-                    <h3>Signaler un probleme</h3>
-                    <p>Si vous rencontrez un probleme avec une recette specifique (mauvaise extraction des ingredients, calcul incorrect, etc.), merci de nous envoyer :</p>
+                    <h3>Signaler un probleme avec une recette</h3>
+                    <p>Si vous rencontrez un probleme avec une recette specifique, merci de preciser dans votre message :</p>
                     <ul>
                         <li>L'URL de la recette ou le texte copie</li>
-                        <li>Une capture d'ecran du resultat obtenu</li>
+                        <li>Le resultat obtenu</li>
                         <li>Le resultat attendu</li>
                     </ul>
-                    <p>Cela nous aidera a ameliorer l'algorithme d'extraction !</p>
                 </section>
             </article>
         </main>
 
-        <footer>
-            <div class="footer-links">
-                <a href="/a-propos">A propos</a>
-                <a href="/blog">Blog</a>
-                <a href="/mentions-legales">Mentions legales</a>
-                <a href="/confidentialite">Confidentialite</a>
-                <a href="/contact">Contact</a>
-            </div>
-            <p class="footer-copy">&copy; 2024 Adapte Recette. Fait avec amour pour les cuisiniers.</p>
-        </footer>
+        <footer></footer>
     </div>
+
+    <script src="footer.js"></script>
+    <script>
+        const form = document.getElementById('contact-form');
+        const status = document.getElementById('form-status');
+        const submitBtn = form.querySelector('.btn-submit');
+        const btnText = submitBtn.querySelector('.btn-text');
+        const btnLoading = submitBtn.querySelector('.btn-loading');
+
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            // Show loading state
+            btnText.style.display = 'none';
+            btnLoading.style.display = 'inline';
+            submitBtn.disabled = true;
+            status.className = 'form-status';
+            status.textContent = '';
+
+            const formData = {
+                name: form.name.value,
+                email: form.email.value,
+                message: form.message.value,
+                _honeypot: form._honeypot.value
+            };
+
+            try {
+                const response = await fetch('/api/contact', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(formData)
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    status.className = 'form-status success';
+                    status.textContent = 'Message envoye avec succes ! Nous vous repondrons rapidement.';
+                    form.reset();
+                } else {
+                    status.className = 'form-status error';
+                    status.textContent = data.error || 'Une erreur est survenue. Veuillez reessayer.';
+                }
+            } catch (error) {
+                status.className = 'form-status error';
+                status.textContent = 'Erreur de connexion. Veuillez reessayer.';
+            } finally {
+                btnText.style.display = 'inline';
+                btnLoading.style.display = 'none';
+                submitBtn.disabled = false;
+            }
+        });
+    </script>
 </body>
 </html>
