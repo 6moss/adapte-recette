@@ -55,13 +55,13 @@ header {
 }
 
 .header-logo {
-    width: 180px;
+    width: 100px;
     height: auto;
 }
 
 /* Smaller logo for subpages (with text) */
 .header-link .header-logo {
-    width: 120px;
+    width: 60px;
     margin-bottom: 0.25rem;
 }
 
