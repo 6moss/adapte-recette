@@ -1,31 +1,65 @@
-// Vercel Serverless Function for contact form
-export default async function handler(req, res) {
+/**
+ * Vercel Edge Function for contact form
+ * Sends emails via FormSubmit.co
+ */
+
+export const config = {
+    runtime: 'edge',
+};
+
+export default async function handler(request) {
+    const headers = {
+        'Access-Control-Allow-Origin': '*',
+        'Access-Control-Allow-Methods': 'POST, OPTIONS',
+        'Access-Control-Allow-Headers': 'Content-Type',
+        'Content-Type': 'application/json',
+    };
+
+    // Handle CORS preflight
+    if (request.method === 'OPTIONS') {
+        return new Response(null, { status: 200, headers });
+    }
+
     // Only allow POST
-    if (req.method !== 'POST') {
-        return res.status(405).json({ error: 'Method not allowed' });
-    }
-
-    const { name, email, message } = req.body;
-
-    // Validate required fields
-    if (!name || !email || !message) {
-        return res.status(400).json({ error: 'Tous les champs sont requis' });
-    }
-
-    // Validate email format
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(email)) {
-        return res.status(400).json({ error: 'Email invalide' });
-    }
-
-    // Anti-spam: check honeypot field
-    if (req.body._honeypot) {
-        return res.status(200).json({ success: true }); // Silently ignore spam
+    if (request.method !== 'POST') {
+        return new Response(
+            JSON.stringify({ error: 'Method not allowed' }),
+            { status: 405, headers }
+        );
     }
 
     try {
-        // Use FormSubmit.co service (free, no API key needed)
-        // The email will be sent to the configured address
+        const body = await request.json();
+        const { name, email, message, _honeypot } = body;
+
+        // Validate required fields
+        if (!name || !email || !message) {
+            return new Response(
+                JSON.stringify({ error: 'Tous les champs sont requis' }),
+                { status: 400, headers }
+            );
+        }
+
+        // Validate email format
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailRegex.test(email)) {
+            return new Response(
+                JSON.stringify({ error: 'Email invalide' }),
+                { status: 400, headers }
+            );
+        }
+
+        // Anti-spam: check honeypot field
+        if (_honeypot) {
+            return new Response(
+                JSON.stringify({ success: true }),
+                { status: 200, headers }
+            );
+        }
+
+        // Use FormSubmit.co service
+        // Note: FormSubmit requires email verification on first use
+        // Visit https://formsubmit.co/confirm/alban.latier@gmail.com after first submission
         const response = await fetch('https://formsubmit.co/ajax/alban.latier@gmail.com', {
             method: 'POST',
             headers: {
@@ -37,20 +71,40 @@ export default async function handler(req, res) {
                 email: email,
                 message: message,
                 _subject: `[Adapte Recette] Nouveau message de ${name}`,
-                _template: 'table'
+                _template: 'table',
+                _captcha: 'false'
             })
         });
 
-        const data = await response.json();
-
         if (response.ok) {
-            return res.status(200).json({ success: true, message: 'Message envoye avec succes' });
+            return new Response(
+                JSON.stringify({ success: true, message: 'Message envoye avec succes' }),
+                { status: 200, headers }
+            );
         } else {
-            console.error('FormSubmit error:', data);
-            return res.status(500).json({ error: 'Erreur lors de l\'envoi du message' });
+            const errorData = await response.text();
+            console.error('FormSubmit error:', response.status, errorData);
+
+            // Check for specific FormSubmit errors
+            if (response.status === 403) {
+                return new Response(
+                    JSON.stringify({
+                        error: 'Le service de contact doit etre active. Veuillez reessayer plus tard.'
+                    }),
+                    { status: 503, headers }
+                );
+            }
+
+            return new Response(
+                JSON.stringify({ error: 'Erreur lors de l\'envoi du message. Veuillez reessayer.' }),
+                { status: 500, headers }
+            );
         }
     } catch (error) {
         console.error('Contact form error:', error);
-        return res.status(500).json({ error: 'Erreur serveur' });
+        return new Response(
+            JSON.stringify({ error: 'Erreur serveur. Veuillez reessayer plus tard.' }),
+            { status: 500, headers }
+        );
     }
 }

@@ -81,6 +81,44 @@
         }, 3000);
     }
 
+    function showNoIngredientsError() {
+        // Create a more detailed error popup
+        const existingPopup = document.querySelector('.error-popup');
+        if (existingPopup) existingPopup.remove();
+
+        const popup = document.createElement('div');
+        popup.className = 'error-popup';
+        popup.innerHTML = `
+            <div class="error-popup-content">
+                <h4>Aucun ingredient detecte</h4>
+                <p>La description ne semble pas contenir d'ingredients au format reconnaissable.</p>
+                <p><strong>Causes possibles :</strong></p>
+                <ul>
+                    <li>Les ingredients sont dans les commentaires ou une autre publication</li>
+                    <li>La description contient uniquement du texte ou des emojis</li>
+                    <li>Le format des ingredients n'est pas standard (ex: "200g farine")</li>
+                </ul>
+                <p><strong>Solutions :</strong></p>
+                <ul>
+                    <li>Copiez les ingredients depuis les commentaires</li>
+                    <li>Reformulez au format "quantite + ingredient" (ex: 200g farine)</li>
+                    <li>Utilisez l'onglet "Manuel" pour saisir les ingredients</li>
+                </ul>
+                <button class="btn btn-primary error-popup-close">Compris</button>
+            </div>
+        `;
+
+        document.body.appendChild(popup);
+
+        popup.querySelector('.error-popup-close').addEventListener('click', () => {
+            popup.remove();
+        });
+
+        popup.addEventListener('click', (e) => {
+            if (e.target === popup) popup.remove();
+        });
+    }
+
     function formatNumber(num) {
         if (num === null || num === undefined) return '';
 
@@ -159,7 +197,7 @@
                 } else {
                     // Fallback to description tab with the text
                     switchToDescriptionTab(data.description);
-                    showToast('Description recuperee. Verifiez les ingredients.', 'info');
+                    showToast('Description recuperee mais aucun ingredient detecte. Cliquez sur "Extraire" ou reformulez le texte.', 'info');
                 }
             } else if (data.fallback || data.error) {
                 // API failed, switch to description tab
@@ -204,7 +242,7 @@
             setIngredients(parsed, portions);
             showToast(`${parsed.length} ingredient(s) extrait(s)`, 'success');
         } else {
-            showToast('Aucun ingredient detecte dans le texte', 'error');
+            showNoIngredientsError();
         }
     }
 
