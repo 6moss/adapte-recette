@@ -55,15 +55,27 @@ header {
 }
 
 .header-logo {
-    width: 64px;
-    height: 64px;
-    margin-bottom: 0.5rem;
+    width: 180px;
+    height: auto;
+}
+
+/* Smaller logo for subpages (with text) */
+.header-link .header-logo {
+    width: 120px;
+    margin-bottom: 0.25rem;
 }
 
 header h1 {
     font-size: 1.75rem;
     color: var(--color-primary);
     font-weight: 700;
+    margin-bottom: 0.25rem;
+}
+
+/* When h1 contains only the logo (homepage) */
+header h1:has(> img:only-child) {
+    font-size: 0;
+    line-height: 1;
 }
 
 .subtitle {
@@ -1055,5 +1067,40 @@ footer {
 .blog-intro {
     color: var(--color-text-light);
     margin-bottom: 1rem;
+    line-height: 1.6;
+}
+
+/* SEO section on homepage */
+.seo-section {
+    margin-top: 1.5rem;
+    background: var(--color-bg);
+    border: 1px solid var(--color-border);
+}
+
+.seo-section h2 {
+    font-size: 1.2rem;
+    color: var(--color-text);
+    border-bottom: none;
+    margin-bottom: 1rem;
+}
+
+.seo-section h3 {
+    font-size: 1rem;
+    margin-top: 1.25rem;
+    margin-bottom: 0.5rem;
+}
+
+.seo-section ul {
+    margin: 0.75rem 0;
+    padding-left: 1.25rem;
+}
+
+.seo-section li {
+    margin-bottom: 0.4rem;
+    font-size: 0.95rem;
+}
+
+.seo-section p {
+    font-size: 0.95rem;
     line-height: 1.6;
 }
