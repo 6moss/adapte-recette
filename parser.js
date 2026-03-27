@@ -806,9 +806,14 @@ const IngredientParser = (function() {
         // Inclut: cuilleres, fleches, checks, puces, etoiles, coeurs, aliments, etc.
         const emojiSeparators = /[\u{1F944}\u{1F449}\u{1F448}\u{27A1}\u{2B05}\u{2705}\u{2714}\u{25AA}\u{25AB}\u{25CF}\u{25CB}\u{1F538}\u{1F539}\u{1F53A}\u{1F53B}\u{1F33F}\u{1F331}\u{1F33E}\u{2728}\u{2B50}\u{1F31F}\u{1F34E}\u{1F34F}\u{1F345}\u{1F346}\u{1F347}\u{1F349}\u{1F34A}\u{1F34B}\u{1F34C}\u{1F34D}\u{1F351}\u{1F352}\u{1F353}\u{1F95D}\u{1F952}\u{1F955}\u{1F951}\u{1F954}\u{1F35E}\u{1F950}\u{1F956}\u{1F9C0}\u{1F95A}\u{1F373}\u{1F357}\u{1F356}\u{1F969}\u{1F953}\u{1F9C8}\u{1F49A}\u{1F49B}\u{1F49C}\u{1F499}\u{2764}\u{1F90D}\u{1F90E}\u{1F5A4}]/gu;
 
-        // Separe par lignes ET par emojis separateurs
+        // Caracteres de puces/bullets courants utilises comme separateurs
+        // Inclut: bullet •, middle dot ·, hyphen-bullet ⁃, triangle ‣, etc.
+        const bulletSeparators = /[•·⁃‣◦◘◙►▸▹→‐–—]/g;
+
+        // Separe par lignes ET par emojis/bullets separateurs
         const lines = section
             .replace(emojiSeparators, '\n')  // Remplace les emojis separateurs par des sauts de ligne
+            .replace(bulletSeparators, '\n') // Remplace les bullets par des sauts de ligne
             .split(/[\n\r]+/)
             .map(line => line.trim())
             .filter(line => line.length > 0);
