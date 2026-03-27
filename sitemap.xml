@@ -2,31 +2,31 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
     <!-- Pages principales -->
     <url>
-        <loc>https://adapte-recette.fr/</loc>
+        <loc>https://www.adapte-recette.fr/</loc>
         <lastmod>2026-03-26</lastmod>
         <changefreq>weekly</changefreq>
         <priority>1.0</priority>
     </url>
     <url>
-        <loc>https://adapte-recette.fr/a-propos</loc>
+        <loc>https://www.adapte-recette.fr/a-propos</loc>
         <lastmod>2026-03-26</lastmod>
         <changefreq>monthly</changefreq>
         <priority>0.6</priority>
     </url>
     <url>
-        <loc>https://adapte-recette.fr/contact</loc>
+        <loc>https://www.adapte-recette.fr/contact</loc>
         <lastmod>2026-03-26</lastmod>
         <changefreq>monthly</changefreq>
         <priority>0.6</priority>
     </url>
     <url>
-        <loc>https://adapte-recette.fr/mentions-legales</loc>
+        <loc>https://www.adapte-recette.fr/mentions-legales</loc>
         <lastmod>2026-03-26</lastmod>
         <changefreq>yearly</changefreq>
         <priority>0.3</priority>
     </url>
     <url>
-        <loc>https://adapte-recette.fr/confidentialite</loc>
+        <loc>https://www.adapte-recette.fr/confidentialite</loc>
         <lastmod>2026-03-26</lastmod>
         <changefreq>yearly</changefreq>
         <priority>0.3</priority>
@@ -34,49 +34,49 @@
 
     <!-- Blog -->
     <url>
-        <loc>https://adapte-recette.fr/blog</loc>
+        <loc>https://www.adapte-recette.fr/blog</loc>
         <lastmod>2026-03-26</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
-        <loc>https://adapte-recette.fr/blog/adapter-recette-nombre-personnes</loc>
+        <loc>https://www.adapte-recette.fr/blog/adapter-recette-nombre-personnes</loc>
         <lastmod>2026-03-26</lastmod>
         <changefreq>monthly</changefreq>
         <priority>0.7</priority>
     </url>
     <url>
-        <loc>https://adapte-recette.fr/blog/convertir-mesures-americaines-francaises</loc>
+        <loc>https://www.adapte-recette.fr/blog/convertir-mesures-americaines-francaises</loc>
         <lastmod>2026-03-26</lastmod>
         <changefreq>monthly</changefreq>
         <priority>0.7</priority>
     </url>
     <url>
-        <loc>https://adapte-recette.fr/blog/equivalences-ingredients-cuisine</loc>
+        <loc>https://www.adapte-recette.fr/blog/equivalences-ingredients-cuisine</loc>
         <lastmod>2026-03-26</lastmod>
         <changefreq>monthly</changefreq>
         <priority>0.7</priority>
     </url>
     <url>
-        <loc>https://adapte-recette.fr/blog/cuisiner-sans-balance</loc>
+        <loc>https://www.adapte-recette.fr/blog/cuisiner-sans-balance</loc>
         <lastmod>2026-03-26</lastmod>
         <changefreq>monthly</changefreq>
         <priority>0.7</priority>
     </url>
     <url>
-        <loc>https://adapte-recette.fr/blog/reussir-recettes-reseaux-sociaux</loc>
+        <loc>https://www.adapte-recette.fr/blog/reussir-recettes-reseaux-sociaux</loc>
         <lastmod>2026-03-26</lastmod>
         <changefreq>monthly</changefreq>
         <priority>0.7</priority>
     </url>
     <url>
-        <loc>https://adapte-recette.fr/blog/adapter-recette-thermomix-companion</loc>
+        <loc>https://www.adapte-recette.fr/blog/adapter-recette-thermomix-companion</loc>
         <lastmod>2026-03-26</lastmod>
         <changefreq>monthly</changefreq>
         <priority>0.7</priority>
     </url>
     <url>
-        <loc>https://adapte-recette.fr/blog/calcul-quantites-patisserie</loc>
+        <loc>https://www.adapte-recette.fr/blog/calcul-quantites-patisserie</loc>
         <lastmod>2026-03-26</lastmod>
         <changefreq>monthly</changefreq>
         <priority>0.7</priority>
