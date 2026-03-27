@@ -13,32 +13,177 @@
     // Règles intelligentes selon le type d'ingrédient
 
     const INGREDIENT_CATEGORIES = {
-        // Épices et aromates : ne pas multiplier proportionnellement
+        // ==================== ÉPICES ET AROMATES ====================
+        // Ne pas multiplier proportionnellement (trop = immangeable)
         spices: [
-            'sel', 'poivre', 'piment', 'paprika', 'cumin', 'curry', 'curcuma',
-            'cannelle', 'muscade', 'gingembre', 'cardamome', 'coriandre',
-            'thym', 'romarin', 'basilic', 'persil', 'ciboulette', 'aneth',
-            'menthe', 'origan', 'laurier', 'sauge', 'estragon', 'cerfeuil',
-            'herbes de provence', 'bouquet garni', 'fines herbes',
-            'ail', 'oignon', 'echalote', 'échalote',
-            'vanille', 'safran', 'clou de girofle', 'anis', 'fenouil',
-            'piment d\'espelette', 'cayenne', 'tabasco', 'harissa',
-            'noix de muscade', 'quatre épices', '4 épices',
-            'herbes', 'épices', 'aromates', 'assaisonnement'
+            // --- Sel et poivre ---
+            'sel', 'salt', 'sel fin', 'sel de mer', 'sea salt', 'fleur de sel',
+            'sel de guérande', 'sel rose', 'pink salt', 'sel noir', 'black salt',
+            'poivre', 'pepper', 'poivre noir', 'black pepper', 'poivre blanc', 'white pepper',
+            'poivre vert', 'green pepper', 'poivre de sichuan', 'sichuan pepper',
+            'poivre de cayenne', 'cayenne pepper', 'poivre long', 'long pepper',
+            'mélange de poivres', 'pepper mix', 'poivre moulu', 'ground pepper',
+
+            // --- Piments ---
+            'piment', 'chili', 'chilli', 'chile', 'hot pepper',
+            'piment d\'espelette', 'espelette pepper', 'piment doux', 'sweet pepper',
+            'piment fort', 'hot chili', 'piment oiseau', 'bird\'s eye chili',
+            'piment jalapeño', 'jalapeño', 'jalapeno', 'piment habanero', 'habanero',
+            'piment chipotle', 'chipotle', 'piment ancho', 'ancho',
+            'piment de jamaïque', 'allspice', 'piment rouge', 'red pepper flakes',
+            'flocons de piment', 'chili flakes', 'crushed red pepper',
+            'sriracha', 'tabasco', 'harissa', 'sambal', 'gochugaru', 'gochujang',
+
+            // --- Épices en poudre ---
+            'paprika', 'paprika fumé', 'smoked paprika', 'pimentón',
+            'cumin', 'cumin moulu', 'ground cumin', 'graines de cumin', 'cumin seeds',
+            'curry', 'curry powder', 'poudre de curry', 'curry en poudre',
+            'garam masala', 'masala', 'tandoori', 'tikka masala', 'madras',
+            'curcuma', 'turmeric', 'safran des indes',
+            'cannelle', 'cinnamon', 'cannelle moulue', 'ground cinnamon', 'cannelle en bâton', 'cinnamon stick',
+            'muscade', 'nutmeg', 'noix de muscade', 'muscade râpée', 'grated nutmeg',
+            'macis', 'mace',
+            'gingembre', 'ginger', 'gingembre moulu', 'ground ginger', 'gingembre en poudre',
+            'cardamome', 'cardamom', 'cardamome verte', 'green cardamom', 'cardamome noire', 'black cardamom',
+            'coriandre', 'coriander', 'coriandre moulue', 'ground coriander', 'graines de coriandre', 'coriander seeds',
+            'fenouil', 'fennel', 'graines de fenouil', 'fennel seeds',
+            'anis', 'anise', 'anis étoilé', 'star anise', 'badiane',
+            'carvi', 'caraway', 'graines de carvi', 'caraway seeds',
+            'fenugrec', 'fenugreek', 'graines de fenugrec',
+            'sumac', 'zaatar', 'za\'atar', 'ras el hanout', 'berbère', 'berbere',
+            'cinq épices', 'five spice', 'chinese five spice', '5 épices',
+            'quatre épices', 'four spice', '4 épices', 'allspice',
+            'colombo', 'vadouvan', 'dukkah', 'baharat',
+
+            // --- Clous et graines ---
+            'clou de girofle', 'clove', 'cloves', 'girofle',
+            'baies de genièvre', 'juniper berries', 'genièvre',
+            'graines de moutarde', 'mustard seeds', 'moutarde en grains',
+            'graines de sésame', 'sesame seeds', 'sésame', 'sesame',
+            'graines de pavot', 'poppy seeds', 'pavot',
+            'graines de nigelle', 'nigella seeds', 'cumin noir', 'black cumin',
+
+            // --- Safran et épices précieuses ---
+            'safran', 'saffron', 'pistils de safran', 'saffron threads',
+            'vanille', 'vanilla', 'gousse de vanille', 'vanilla bean', 'vanilla pod',
+            'extrait de vanille', 'vanilla extract', 'arôme vanille',
+
+            // --- Herbes fraîches ---
+            'thym', 'thyme', 'thym frais', 'fresh thyme', 'thym séché', 'dried thyme',
+            'romarin', 'rosemary', 'romarin frais', 'fresh rosemary',
+            'basilic', 'basil', 'basilic frais', 'fresh basil', 'basilic thaï', 'thai basil',
+            'persil', 'parsley', 'persil plat', 'flat leaf parsley', 'persil frisé', 'curly parsley',
+            'ciboulette', 'chives', 'ciboulette fraîche', 'fresh chives',
+            'aneth', 'dill', 'aneth frais', 'fresh dill',
+            'menthe', 'mint', 'menthe fraîche', 'fresh mint', 'menthe poivrée', 'peppermint',
+            'origan', 'oregano', 'origan frais', 'fresh oregano', 'origan séché', 'dried oregano',
+            'laurier', 'bay leaf', 'bay leaves', 'feuille de laurier', 'laurier sauce',
+            'sauge', 'sage', 'sauge fraîche', 'fresh sage',
+            'estragon', 'tarragon', 'estragon frais', 'fresh tarragon',
+            'cerfeuil', 'chervil', 'cerfeuil frais', 'fresh chervil',
+            'marjolaine', 'marjoram', 'marjolaine fraîche',
+            'sarriette', 'savory', 'sarriette fraîche',
+            'livèche', 'lovage', 'céleri perpétuel',
+            'citronnelle', 'lemongrass', 'lemon grass',
+            'feuilles de combava', 'kaffir lime leaves', 'combava',
+            'feuilles de curry', 'curry leaves',
+            'shiso', 'perilla',
+
+            // --- Mélanges d'herbes ---
+            'herbes de provence', 'herbes de Provence', 'provence herbs',
+            'bouquet garni', 'fines herbes', 'mixed herbs',
+            'herbes', 'herbs', 'herbes fraîches', 'fresh herbs',
+            'herbes séchées', 'dried herbs', 'herbes aromatiques',
+            'italian seasoning', 'assaisonnement italien',
+
+            // --- Alliacées (ail, oignon, etc.) ---
+            'ail', 'garlic', 'gousse d\'ail', 'garlic clove', 'ail frais', 'fresh garlic',
+            'ail en poudre', 'garlic powder', 'ail semoule', 'granulated garlic',
+            'ail noir', 'black garlic', 'ail des ours', 'wild garlic', 'bear garlic',
+            'oignon', 'onion', 'oignon jaune', 'yellow onion', 'oignon rouge', 'red onion',
+            'oignon blanc', 'white onion', 'oignon doux', 'sweet onion',
+            'oignon nouveau', 'spring onion', 'oignon vert', 'green onion', 'scallion',
+            'oignon frit', 'fried onion', 'oignon en poudre', 'onion powder',
+            'échalote', 'echalote', 'shallot', 'échalote grise', 'échalote rose',
+            'ciboule', 'welsh onion', 'cive',
+            'poireau', 'leek', 'blanc de poireau', 'vert de poireau',
+
+            // --- Zestes et arômes ---
+            'zeste', 'zest', 'zeste de citron', 'lemon zest', 'zeste d\'orange', 'orange zest',
+            'zeste de lime', 'lime zest', 'zeste de citron vert',
+            'eau de fleur d\'oranger', 'orange blossom water', 'eau de rose', 'rose water',
+            'extrait d\'amande', 'almond extract', 'arôme amande',
+
+            // --- Condiments et assaisonnements ---
+            'moutarde', 'mustard', 'moutarde de dijon', 'dijon mustard',
+            'moutarde à l\'ancienne', 'whole grain mustard', 'moutarde en grains',
+            'wasabi', 'raifort', 'horseradish',
+            'nuoc mam', 'fish sauce', 'sauce poisson', 'nam pla',
+            'sauce soja', 'soy sauce', 'shoyu', 'tamari',
+            'vinaigre', 'vinegar', 'vinaigre balsamique', 'balsamic vinegar',
+            'worcestershire', 'sauce worcestershire',
+
+            // --- Termes génériques ---
+            'épices', 'spices', 'épice', 'spice',
+            'aromates', 'aromatics', 'aromate',
+            'assaisonnement', 'seasoning', 'assaisonner'
         ],
-        // Levures et agents levants : plafonner à x2
+
+        // ==================== LEVURES ET AGENTS LEVANTS ====================
+        // Plafonner à x2 (trop = effondrement)
         leavening: [
-            'levure', 'levure chimique', 'levure boulangère', 'levure de boulanger',
-            'levure fraîche', 'levure sèche', 'levure instantanée',
-            'bicarbonate', 'bicarbonate de soude', 'baking powder', 'baking soda',
-            'poudre à lever', 'poudre levante'
+            // --- Levures biologiques ---
+            'levure', 'yeast', 'levure de boulanger', 'baker\'s yeast',
+            'levure boulangère', 'bread yeast', 'levure de bière', 'brewer\'s yeast',
+            'levure fraîche', 'fresh yeast', 'levure en cube', 'cake yeast',
+            'levure sèche', 'dry yeast', 'active dry yeast', 'levure sèche active',
+            'levure instantanée', 'instant yeast', 'levure rapide', 'quick yeast',
+            'levure déshydratée', 'dehydrated yeast', 'levure lyophilisée',
+            'levain', 'sourdough starter', 'sourdough', 'starter',
+            'poolish', 'biga', 'preferment', 'pré-ferment',
+
+            // --- Agents chimiques ---
+            'levure chimique', 'baking powder', 'poudre à lever', 'poudre levante',
+            'levure alsacienne', 'levure pâtissière',
+            'bicarbonate', 'baking soda', 'bicarbonate de soude', 'bicarbonate de sodium',
+            'sodium bicarbonate', 'bicarb',
+            'crème de tartre', 'cream of tartar', 'tartaric acid',
+
+            // --- Autres agents levants ---
+            'ammoniaque', 'baker\'s ammonia', 'ammonium bicarbonate',
+            'potasse', 'potash', 'carbonate de potassium'
         ],
-        // Matières grasses de cuisson : ne pas multiplier au-delà de x1.5
+
+        // ==================== MATIÈRES GRASSES DE CUISSON ====================
+        // Plafonner à x1.5 (dépend de la taille du récipient, pas des portions)
         cookingFat: [
-            'huile pour la cuisson', 'huile de cuisson',
-            'beurre pour la poêle', 'beurre pour graisser',
-            'huile pour friture', 'huile de friture',
-            'graisse', 'saindoux', 'margarine pour cuisson'
+            // --- Huiles de cuisson ---
+            'huile pour la cuisson', 'cooking oil', 'huile de cuisson',
+            'huile pour friture', 'frying oil', 'huile de friture', 'oil for frying',
+            'huile pour graisser', 'oil for greasing',
+            'huile pour le moule', 'oil for the pan',
+            'huile pour la poêle', 'oil for the skillet',
+
+            // --- Beurre de cuisson ---
+            'beurre pour la poêle', 'butter for the pan',
+            'beurre pour graisser', 'butter for greasing',
+            'beurre pour le moule', 'butter for the mold',
+            'beurre de cuisson', 'cooking butter',
+            'beurre pour sauter', 'butter for sautéing',
+            'noisette de beurre', 'knob of butter',
+
+            // --- Graisses animales ---
+            'graisse', 'grease', 'fat', 'graisse de cuisson', 'cooking fat',
+            'saindoux', 'lard', 'graisse de porc', 'pork fat',
+            'graisse de canard', 'duck fat', 'graisse d\'oie', 'goose fat',
+            'suif', 'tallow', 'beef fat', 'graisse de boeuf',
+            'schmaltz', 'chicken fat', 'graisse de poulet',
+
+            // --- Autres matières grasses de cuisson ---
+            'margarine pour cuisson', 'cooking margarine',
+            'végétaline', 'shortening', 'crisco',
+            'ghee pour cuisson', 'cooking ghee',
+            'spray de cuisson', 'cooking spray', 'spray anti-adhésif'
         ]
     };
 
