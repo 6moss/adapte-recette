@@ -1288,3 +1288,115 @@ footer {
     border-radius: var(--radius-sm);
     border-left: 3px solid var(--color-success);
 }
+
+/* ==================== PWA Install Button ==================== */
+.install-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    margin: 0 auto 1rem;
+    padding: 0.6rem 1.25rem;
+    background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%);
+    color: white;
+    border: none;
+    border-radius: 50px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    cursor: pointer;
+    box-shadow: 0 2px 8px rgba(224, 122, 95, 0.3);
+    transition: all var(--transition);
+    animation: pulse-install 2s ease-in-out infinite;
+}
+
+.install-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(224, 122, 95, 0.4);
+}
+
+.install-btn:active {
+    transform: translateY(0);
+}
+
+.install-btn svg {
+    flex-shrink: 0;
+}
+
+@keyframes pulse-install {
+    0%, 100% {
+        box-shadow: 0 2px 8px rgba(224, 122, 95, 0.3);
+    }
+    50% {
+        box-shadow: 0 2px 16px rgba(224, 122, 95, 0.5);
+    }
+}
+
+/* ==================== Adjustment Popup (Mobile-friendly) ==================== */
+.adjustment-popup {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.4);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    padding: 1rem;
+    animation: fadeIn 0.2s ease;
+}
+
+.adjustment-popup-content {
+    background: white;
+    padding: 1.25rem;
+    border-radius: var(--radius);
+    max-width: 320px;
+    width: 100%;
+    box-shadow: var(--shadow-lg);
+    animation: slideUp 0.2s ease;
+}
+
+.adjustment-popup-header {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 0.75rem;
+    font-size: 1rem;
+}
+
+.adjustment-popup-emoji {
+    font-size: 1.25rem;
+}
+
+.adjustment-popup-content p {
+    font-size: 0.9rem;
+    color: var(--color-text-light);
+    margin-bottom: 1rem;
+    line-height: 1.5;
+}
+
+.adjustment-popup-close {
+    width: 100%;
+}
+
+.btn-small {
+    padding: 0.5rem 1rem;
+    font-size: 0.85rem;
+}
+
+@keyframes slideUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}

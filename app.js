@@ -577,6 +577,142 @@
         return rounded.toString().replace('.', ',');
     }
 
+    /**
+     * Conjugue une unité au pluriel si la quantité > 1
+     * @param {string} unit - L'unité à conjuguer
+     * @param {number} quantity - La quantité
+     * @returns {string} L'unité conjuguée
+     */
+    function pluralizeUnit(unit, quantity) {
+        if (!unit || quantity === null || quantity === undefined) return unit || '';
+        if (quantity <= 1) return unit;
+
+        const unitLower = unit.toLowerCase().trim();
+
+        // Abréviations qui ne changent pas
+        const unchangedAbbreviations = [
+            'g', 'kg', 'mg', 'ml', 'cl', 'dl', 'l', 'oz', 'lb', 'tsp', 'tbsp',
+            'c.a.c', 'c.a.s', 'c.a.d', 'cac', 'cas', 'cad', 'cc', 'cs',
+            'c.c', 'c.s', 'c.c.', 'c.s.', 'c.a.c.', 'c.a.s.', 'c.a.d.',
+            'càc', 'càs', 'fl oz', 'pt', 'qt', 'gal', 'µg', 'µl', 'ppm'
+        ];
+
+        if (unchangedAbbreviations.includes(unitLower)) {
+            return unit;
+        }
+
+        // Mots composés avec modificateur (ex: "belle pincée", "grosse c.a.s")
+        // On ne modifie que le dernier mot
+        const parts = unit.split(' ');
+        if (parts.length > 1) {
+            const lastPart = parts[parts.length - 1];
+            const pluralizedLast = pluralizeUnit(lastPart, quantity);
+            // Pluraliser aussi le modificateur si nécessaire
+            const modifier = parts.slice(0, -1).join(' ');
+            const pluralizedModifier = pluralizeModifier(modifier, quantity);
+            return pluralizedModifier + ' ' + pluralizedLast;
+        }
+
+        // Pluriels irréguliers
+        const irregulars = {
+            'oeuf': 'oeufs',
+            'œuf': 'œufs',
+            'chou': 'choux',
+            'bijou': 'bijoux',
+            'genou': 'genoux',
+            'pou': 'poux',
+            'caillou': 'cailloux',
+            'hibou': 'hiboux',
+            'joujou': 'joujoux'
+        };
+
+        if (irregulars[unitLower]) {
+            // Préserver la casse originale
+            return unit[0] === unit[0].toUpperCase()
+                ? irregulars[unitLower].charAt(0).toUpperCase() + irregulars[unitLower].slice(1)
+                : irregulars[unitLower];
+        }
+
+        // Mots invariables
+        const invariable = ['nez', 'riz', 'gaz', 'bois', 'pois', 'mois', 'fois', 'poids'];
+        if (invariable.includes(unitLower)) {
+            return unit;
+        }
+
+        // Mots se terminant par s, x, z -> invariables
+        if (unitLower.endsWith('s') || unitLower.endsWith('x') || unitLower.endsWith('z')) {
+            return unit;
+        }
+
+        // Mots se terminant par eau, au, eu -> +x
+        if (unitLower.endsWith('eau') || unitLower.endsWith('au') || unitLower.endsWith('eu')) {
+            return unit + 'x';
+        }
+
+        // Mots se terminant par al -> aux (avec exceptions)
+        if (unitLower.endsWith('al')) {
+            const alExceptions = ['bal', 'cal', 'carnaval', 'chacal', 'festival', 'récital', 'régal'];
+            if (alExceptions.includes(unitLower)) {
+                return unit + 's';
+            }
+            return unit.slice(0, -2) + (unit[unit.length - 2] === 'A' ? 'AUX' : 'aux');
+        }
+
+        // Mots se terminant par ail -> aux (avec exceptions)
+        if (unitLower.endsWith('ail')) {
+            const ailToAux = ['bail', 'corail', 'émail', 'soupirail', 'travail', 'ventail', 'vitrail'];
+            if (ailToAux.includes(unitLower)) {
+                return unit.slice(0, -3) + (unit[unit.length - 3] === 'A' ? 'AUX' : 'aux');
+            }
+            return unit + 's';
+        }
+
+        // Règle générale : ajouter s
+        return unit + 's';
+    }
+
+    /**
+     * Pluralise les modificateurs (belle -> belles, gros -> gros, etc.)
+     */
+    function pluralizeModifier(modifier, quantity) {
+        if (!modifier || quantity <= 1) return modifier;
+
+        const modLower = modifier.toLowerCase();
+
+        // Modificateurs qui prennent un 's'
+        const feminineModifiers = {
+            'belle': 'belles',
+            'bonne': 'bonnes',
+            'grosse': 'grosses',
+            'grande': 'grandes',
+            'petite': 'petites',
+            'généreuse': 'généreuses',
+            'genereuse': 'genereuses',
+            'pleine': 'pleines'
+        };
+
+        // Modificateurs invariables ou déjà au pluriel
+        const invariableModifiers = ['gros', 'grand', 'petit', 'beau', 'bon'];
+
+        if (feminineModifiers[modLower]) {
+            // Préserver la casse
+            return modifier[0] === modifier[0].toUpperCase()
+                ? feminineModifiers[modLower].charAt(0).toUpperCase() + feminineModifiers[modLower].slice(1)
+                : feminineModifiers[modLower];
+        }
+
+        if (invariableModifiers.includes(modLower)) {
+            return modifier;
+        }
+
+        // Par défaut, ajouter 's' si pas déjà présent
+        if (!modLower.endsWith('s') && !modLower.endsWith('x')) {
+            return modifier + 's';
+        }
+
+        return modifier;
+    }
+
     // ==================== TABS ====================
 
     function initTabs() {
@@ -967,7 +1103,9 @@
 
             if (ing.quantity !== null && ing.quantity !== undefined) {
                 const newQty = ing.quantity * adjustedMultiplier;
-                qtyText = `${formatNumber(newQty)}${ing.unit ? ' ' + ing.unit : ''}`;
+                // Conjuguer l'unité au pluriel si nécessaire
+                const pluralizedUnit = pluralizeUnit(ing.unit, newQty);
+                qtyText = `${formatNumber(newQty)}${pluralizedUnit ? ' ' + pluralizedUnit : ''}`;
 
                 if (isAdjusted) {
                     tooltip = getAdjustmentTooltip(category, baseMultiplier, adjustedMultiplier);
@@ -981,9 +1119,17 @@
             const categoryIcon = isAdjusted ? getCategoryIcon(category) : '';
 
             item.innerHTML = `
-                <span class="result-item-qty ${adjustedClass}" ${tooltip ? `title="${tooltip}"` : ''}>${qtyText}${categoryIcon}</span>
+                <span class="result-item-qty ${adjustedClass}" ${tooltip ? `data-tooltip="${tooltip}"` : ''}>${qtyText}${categoryIcon}</span>
                 <span class="result-item-name">${ing.name}</span>
             `;
+
+            // Ajouter gestionnaire de clic pour afficher le tooltip (mobile)
+            if (tooltip) {
+                const qtySpan = item.querySelector('.result-item-qty');
+                qtySpan.addEventListener('click', () => showAdjustmentPopup(tooltip, category));
+                qtySpan.style.cursor = 'pointer';
+            }
+
             elements.resultList.appendChild(item);
         });
 
@@ -994,9 +1140,62 @@
         if (hasAdjustments && baseMultiplier !== 1) {
             const note = document.createElement('p');
             note.className = 'smart-note';
-            note.innerHTML = '⚡ <em>Certaines quantités ont été ajustées intelligemment (épices, levure). Survolez pour plus d\'infos.</em>';
+            note.innerHTML = '⚡ <em>Certaines quantités ont été ajustées intelligemment. Touchez les icônes pour comprendre.</em>';
             elements.resultList.after(note);
         }
+    }
+
+    /**
+     * Affiche une popup explicative pour les ajustements (mobile-friendly)
+     */
+    function showAdjustmentPopup(message, category) {
+        // Supprimer une popup existante
+        const existing = document.querySelector('.adjustment-popup');
+        if (existing) existing.remove();
+
+        const popup = document.createElement('div');
+        popup.className = 'adjustment-popup';
+
+        let categoryTitle = '';
+        let categoryEmoji = '';
+        switch (category) {
+            case 'spices':
+                categoryTitle = 'Épices et aromates';
+                categoryEmoji = '🌿';
+                break;
+            case 'leavening':
+                categoryTitle = 'Levures et agents levants';
+                categoryEmoji = '⬆️';
+                break;
+            case 'cookingFat':
+                categoryTitle = 'Matières grasses de cuisson';
+                categoryEmoji = '🍳';
+                break;
+        }
+
+        popup.innerHTML = `
+            <div class="adjustment-popup-content">
+                <div class="adjustment-popup-header">
+                    <span class="adjustment-popup-emoji">${categoryEmoji}</span>
+                    <strong>${categoryTitle}</strong>
+                </div>
+                <p>${message}</p>
+                <button class="btn btn-small adjustment-popup-close">OK</button>
+            </div>
+        `;
+
+        document.body.appendChild(popup);
+
+        // Fermer au clic sur le bouton ou en dehors
+        popup.querySelector('.adjustment-popup-close').addEventListener('click', () => popup.remove());
+        popup.addEventListener('click', (e) => {
+            if (e.target === popup) popup.remove();
+        });
+
+        // Fermer automatiquement après 5 secondes
+        setTimeout(() => {
+            if (popup.parentNode) popup.remove();
+        }, 5000);
     }
 
     /**
@@ -1035,7 +1234,8 @@
             let line = '';
             if (ing.quantity !== null && ing.quantity !== undefined) {
                 const newQty = ing.quantity * adjustedMultiplier;
-                line = `- ${formatNumber(newQty)}${ing.unit ? ' ' + ing.unit : ''} ${ing.name}`;
+                const pluralizedUnit = pluralizeUnit(ing.unit, newQty);
+                line = `- ${formatNumber(newQty)}${pluralizedUnit ? ' ' + pluralizedUnit : ''} ${ing.name}`;
             } else {
                 line = `- ${ing.unit ? ing.unit + ' ' : ''}${ing.name}`;
             }
@@ -1057,6 +1257,52 @@
                 .then(() => console.log('Service Worker registered'))
                 .catch(err => console.log('Service Worker registration failed:', err));
         }
+    }
+
+    // ==================== PWA INSTALL ====================
+
+    let deferredPrompt = null;
+
+    function initPWAInstall() {
+        const installBtn = document.getElementById('install-btn');
+        if (!installBtn) return;
+
+        // Cacher par défaut
+        installBtn.style.display = 'none';
+
+        // Vérifier si déjà installée (mode standalone)
+        if (window.matchMedia('(display-mode: standalone)').matches) {
+            return; // Déjà installée, ne pas afficher le bouton
+        }
+
+        // Écouter l'événement beforeinstallprompt
+        window.addEventListener('beforeinstallprompt', (e) => {
+            e.preventDefault();
+            deferredPrompt = e;
+            installBtn.style.display = 'flex';
+        });
+
+        // Gérer le clic sur le bouton
+        installBtn.addEventListener('click', async () => {
+            if (!deferredPrompt) return;
+
+            deferredPrompt.prompt();
+            const { outcome } = await deferredPrompt.userChoice;
+
+            if (outcome === 'accepted') {
+                showToast('Application installée !', 'success');
+            }
+
+            deferredPrompt = null;
+            installBtn.style.display = 'none';
+        });
+
+        // Cacher le bouton si l'app est installée
+        window.addEventListener('appinstalled', () => {
+            deferredPrompt = null;
+            installBtn.style.display = 'none';
+            showToast('Application installée avec succès !', 'success');
+        });
     }
 
     // ==================== INIT ====================
@@ -1089,6 +1335,9 @@
 
         // Register service worker
         registerServiceWorker();
+
+        // Initialize PWA install button
+        initPWAInstall();
     }
 
     // Start app when DOM is ready
